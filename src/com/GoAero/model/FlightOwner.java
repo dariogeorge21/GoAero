@@ -11,7 +11,7 @@ public class FlightOwner {
     private String companyCode;
     private String contactInfo;
     private int flightCount;
-    private String passwordHash; // For flight owner login
+    private String password; // For flight owner login
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
@@ -19,23 +19,23 @@ public class FlightOwner {
     public FlightOwner() {}
 
     // Constructor without ID (for new flight owners)
-    public FlightOwner(String companyName, String companyCode, String contactInfo, String passwordHash) {
+    public FlightOwner(String companyName, String companyCode, String contactInfo, String password) {
         this.companyName = companyName;
         this.companyCode = companyCode;
         this.contactInfo = contactInfo;
-        this.passwordHash = passwordHash;
+        this.password = password;
         this.flightCount = 0;
     }
 
     // Constructor with all fields
-    public FlightOwner(int ownerId, String companyName, String companyCode, String contactInfo, 
-                       int flightCount, String passwordHash, Timestamp createdAt, Timestamp updatedAt) {
+    public FlightOwner(int ownerId, String companyName, String companyCode, String contactInfo,
+                       int flightCount, String password, Timestamp createdAt, Timestamp updatedAt) {
         this.ownerId = ownerId;
         this.companyName = companyName;
         this.companyCode = companyCode;
         this.contactInfo = contactInfo;
         this.flightCount = flightCount;
-        this.passwordHash = passwordHash;
+        this.password = password;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -81,12 +81,21 @@ public class FlightOwner {
         this.flightCount = flightCount;
     }
 
-    public String getPasswordHash() {
-        return passwordHash;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    // Backward compatibility methods
+    public String getPasswordHash() {
+        return password;
+    }
+
+    public void setPasswordHash(String password) {
+        this.password = password;
     }
 
     public Timestamp getCreatedAt() {

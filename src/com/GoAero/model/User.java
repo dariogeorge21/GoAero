@@ -13,7 +13,7 @@ public class User {
     private String email;
     private String phone;
     private LocalDate dateOfBirth;
-    private String passwordHash;
+    private String password;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
@@ -21,26 +21,26 @@ public class User {
     public User() {}
 
     // Constructor without ID (for new users)
-    public User(String firstName, String lastName, String email, String phone, 
-                LocalDate dateOfBirth, String passwordHash) {
+    public User(String firstName, String lastName, String email, String phone,
+                LocalDate dateOfBirth, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phone = phone;
         this.dateOfBirth = dateOfBirth;
-        this.passwordHash = passwordHash;
+        this.password = password;
     }
 
     // Constructor with all fields
-    public User(int userId, String firstName, String lastName, String email, String phone, 
-                LocalDate dateOfBirth, String passwordHash, Timestamp createdAt, Timestamp updatedAt) {
+    public User(int userId, String firstName, String lastName, String email, String phone,
+                LocalDate dateOfBirth, String password, Timestamp createdAt, Timestamp updatedAt) {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phone = phone;
         this.dateOfBirth = dateOfBirth;
-        this.passwordHash = passwordHash;
+        this.password = password;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -94,12 +94,21 @@ public class User {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public String getPasswordHash() {
-        return passwordHash;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    // Backward compatibility methods
+    public String getPasswordHash() {
+        return password;
+    }
+
+    public void setPasswordHash(String password) {
+        this.password = password;
     }
 
     public Timestamp getCreatedAt() {

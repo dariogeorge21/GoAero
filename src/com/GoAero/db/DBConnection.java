@@ -37,8 +37,7 @@ public class DBConnection {
 
             // Establish the connection
             connection = DriverManager.getConnection(DB_URL, USER, PASS);
-
-            // System.out.println("Database connected successfully!"); // Uncomment for testing
+             System.out.println("Database connected successfully!");
 
         } catch (ClassNotFoundException e) {
             System.err.println("JDBC Driver not found!");

@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 public class Admin {
     private int adminId;
     private String username;
-    private String passwordHash;
+    private String password;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
@@ -16,17 +16,17 @@ public class Admin {
     public Admin() {}
 
     // Constructor without ID (for new admins)
-    public Admin(String username, String passwordHash) {
+    public Admin(String username, String password) {
         this.username = username;
-        this.passwordHash = passwordHash;
+        this.password = password;
     }
 
     // Constructor with all fields
-    public Admin(int adminId, String username, String passwordHash, 
+    public Admin(int adminId, String username, String password,
                  Timestamp createdAt, Timestamp updatedAt) {
         this.adminId = adminId;
         this.username = username;
-        this.passwordHash = passwordHash;
+        this.password = password;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -48,12 +48,21 @@ public class Admin {
         this.username = username;
     }
 
-    public String getPasswordHash() {
-        return passwordHash;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    // Backward compatibility methods
+    public String getPasswordHash() {
+        return password;
+    }
+
+    public void setPasswordHash(String password) {
+        this.password = password;
     }
 
     public Timestamp getCreatedAt() {
