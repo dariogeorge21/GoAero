@@ -9,7 +9,10 @@ import com.GoAero.model.FlightOwner;
 import com.GoAero.util.ValidationUtil;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -17,9 +20,20 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 
 /**
- * Dialog for admin to add or edit flights
+ * Dialog for admin to add or edit flights with modern UI design
  */
 public class AdminFlightDialog extends JDialog {
+    // Professional color scheme (consistent with other GoAero pages)
+    private static final Color PRIMARY_BLUE = new Color(25, 118, 210);
+    private static final Color ACCENT_ORANGE = new Color(255, 152, 0);
+    private static final Color DARK_BLUE = new Color(13, 71, 161);
+    private static final Color LIGHT_GRAY = new Color(245, 245, 245);
+    private static final Color HOVER_BLUE = new Color(30, 136, 229);
+    private static final Color SUCCESS_GREEN = new Color(76, 175, 80);
+    private static final Color BACKGROUND_GRAY = new Color(250, 250, 250);
+    private static final Color CARD_WHITE = Color.WHITE;
+    private static final Color DANGER_RED = new Color(244, 67, 54);
+    private static final Color WARNING_ORANGE = new Color(255, 193, 7);
     private Flight flight;
     private FlightDAO flightDAO;
     private AirportDAO airportDAO;
@@ -52,108 +66,51 @@ public class AdminFlightDialog extends JDialog {
     }
 
     private void initializeComponents() {
-        setSize(500, 600);
+        setSize(700, 750);
         setLocationRelativeTo(getParent());
         setResizable(false);
 
-        flightCodeField = new JTextField(20);
-        flightNameField = new JTextField(20);
-        capacityField = new JTextField(20);
-        priceField = new JTextField(20);
-        departureTimeField = new JTextField(20);
-        destinationTimeField = new JTextField(20);
+        // Create styled form fields with placeholders
+        flightCodeField = createStyledTextField("Enter flight code (e.g., GA123)");
+        flightNameField = createStyledTextField("Enter descriptive flight name or route");
+        capacityField = createStyledTextField("Enter passenger capacity");
+        priceField = createStyledTextField("Enter ticket price in USD");
+        departureTimeField = createStyledTextField("YYYY-MM-DD HH:MM");
+        destinationTimeField = createStyledTextField("YYYY-MM-DD HH:MM");
         
-        companyComboBox = new JComboBox<>();
-        departureAirportComboBox = new JComboBox<>();
-        destinationAirportComboBox = new JComboBox<>();
+        // Create styled combo boxes
+        companyComboBox = createStyledComboBox();
+        departureAirportComboBox = createStyledComboBox();
+        destinationAirportComboBox = createStyledComboBox();
         
-        saveButton = new JButton(isEditMode ? "Update Flight" : "Create Flight");
-        cancelButton = new JButton("Cancel");
+        // Create modern styled buttons
+        String buttonText = isEditMode ? "✈ Update Flight" : "✈ Create Flight";
+        saveButton = createStyledButton(buttonText, PRIMARY_BLUE, Color.WHITE, 14);
+        cancelButton = createStyledButton("❌ Cancel", LIGHT_GRAY, DARK_BLUE, 14);
     }
 
     private void setupLayout() {
         setLayout(new BorderLayout());
+        getContentPane().setBackground(BACKGROUND_GRAY);
 
-        // Title panel
-        JPanel titlePanel = new JPanel();
-        JLabel titleLabel = new JLabel(isEditMode ? "Edit Flight" : "Add New Flight");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        titlePanel.add(titleLabel);
-        add(titlePanel, BorderLayout.NORTH);
+        // Main content panel with padding
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBackground(BACKGROUND_GRAY);
+        mainPanel.setBorder(new EmptyBorder(25, 30, 30, 30));
 
-        // Form panel
-        JPanel formPanel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 10, 8, 10);
-        gbc.anchor = GridBagConstraints.WEST;
+        // Header section
+        JPanel headerSection = createHeaderSection();
+        mainPanel.add(headerSection, BorderLayout.NORTH);
 
-        // Flight Code
-        gbc.gridx = 0; gbc.gridy = 0;
-        formPanel.add(new JLabel("Flight Code:"), gbc);
-        gbc.gridx = 1;
-        formPanel.add(flightCodeField, gbc);
+        // Content section with form
+        JPanel contentSection = createContentSection();
+        mainPanel.add(contentSection, BorderLayout.CENTER);
 
-        // Flight Name
-        gbc.gridx = 0; gbc.gridy = 1;
-        formPanel.add(new JLabel("Flight Name:"), gbc);
-        gbc.gridx = 1;
-        formPanel.add(flightNameField, gbc);
+        // Button section
+        JPanel buttonSection = createButtonSection();
+        mainPanel.add(buttonSection, BorderLayout.SOUTH);
 
-        // Company
-        gbc.gridx = 0; gbc.gridy = 2;
-        formPanel.add(new JLabel("Airline Company:"), gbc);
-        gbc.gridx = 1;
-        formPanel.add(companyComboBox, gbc);
-
-        // Departure Airport
-        gbc.gridx = 0; gbc.gridy = 3;
-        formPanel.add(new JLabel("Departure Airport:"), gbc);
-        gbc.gridx = 1;
-        formPanel.add(departureAirportComboBox, gbc);
-
-        // Destination Airport
-        gbc.gridx = 0; gbc.gridy = 4;
-        formPanel.add(new JLabel("Destination Airport:"), gbc);
-        gbc.gridx = 1;
-        formPanel.add(destinationAirportComboBox, gbc);
-
-        // Departure Time
-        gbc.gridx = 0; gbc.gridy = 5;
-        formPanel.add(new JLabel("Departure Time:"), gbc);
-        gbc.gridx = 1;
-        JPanel depTimePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        depTimePanel.add(departureTimeField);
-        depTimePanel.add(new JLabel(" (YYYY-MM-DD HH:MM)"));
-        formPanel.add(depTimePanel, gbc);
-
-        // Destination Time
-        gbc.gridx = 0; gbc.gridy = 6;
-        formPanel.add(new JLabel("Arrival Time:"), gbc);
-        gbc.gridx = 1;
-        JPanel destTimePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        destTimePanel.add(destinationTimeField);
-        destTimePanel.add(new JLabel(" (YYYY-MM-DD HH:MM)"));
-        formPanel.add(destTimePanel, gbc);
-
-        // Capacity
-        gbc.gridx = 0; gbc.gridy = 7;
-        formPanel.add(new JLabel("Capacity:"), gbc);
-        gbc.gridx = 1;
-        formPanel.add(capacityField, gbc);
-
-        // Price
-        gbc.gridx = 0; gbc.gridy = 8;
-        formPanel.add(new JLabel("Price ($):"), gbc);
-        gbc.gridx = 1;
-        formPanel.add(priceField, gbc);
-
-        add(formPanel, BorderLayout.CENTER);
-
-        // Button panel
-        JPanel buttonPanel = new JPanel(new FlowLayout());
-        buttonPanel.add(saveButton);
-        buttonPanel.add(cancelButton);
-        add(buttonPanel, BorderLayout.SOUTH);
+        add(mainPanel, BorderLayout.CENTER);
     }
 
     private void setupEventListeners() {
@@ -395,10 +352,464 @@ public class AdminFlightDialog extends JDialog {
     }
 
     private void showError(String message) {
-        JOptionPane.showMessageDialog(this, message, "Validation Error", JOptionPane.ERROR_MESSAGE);
+        // Create a custom styled error dialog
+        JDialog dialog = new JDialog(this, "Flight Management Error", true);
+        dialog.setUndecorated(true);
+
+        // Main content with rounded background and shadow
+        JPanel content = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                int arc = 16;
+                // shadow
+                g2.setColor(new Color(0, 0, 0, 25));
+                g2.fillRoundRect(4, 8, getWidth() - 8, getHeight() - 8, arc, arc);
+                // background
+                g2.setColor(Color.WHITE);
+                g2.fillRoundRect(0, 0, getWidth() - 8, getHeight() - 12, arc, arc);
+                g2.dispose();
+            }
+        };
+        content.setLayout(new BorderLayout());
+        content.setBorder(new EmptyBorder(16, 18, 14, 18));
+
+        // Header
+        JPanel header = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 8));
+        header.setOpaque(false);
+        JLabel errorIcon = new JLabel("✈⚠");
+        errorIcon.setFont(new Font("Arial", Font.BOLD, 24));
+        errorIcon.setForeground(DANGER_RED);
+        header.add(errorIcon);
+        JLabel title = new JLabel("Validation Error");
+        title.setFont(new Font("Arial", Font.BOLD, 16));
+        title.setForeground(DARK_BLUE);
+        header.add(title);
+
+        content.add(header, BorderLayout.NORTH);
+
+        // Message area
+        JTextArea msgArea = new JTextArea(message);
+        msgArea.setFont(new Font("Arial", Font.PLAIN, 14));
+        msgArea.setEditable(false);
+        msgArea.setOpaque(false);
+        msgArea.setLineWrap(true);
+        msgArea.setWrapStyleWord(true);
+        msgArea.setBorder(new EmptyBorder(8, 6, 12, 6));
+        content.add(msgArea, BorderLayout.CENTER);
+
+        // Button panel
+        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        btnPanel.setOpaque(false);
+        JButton ok = createStyledButton("Understood", DANGER_RED, Color.WHITE, 14);
+        ok.setPreferredSize(new Dimension(110, 36));
+        ok.addActionListener(e -> dialog.dispose());
+        btnPanel.add(ok);
+        content.add(btnPanel, BorderLayout.SOUTH);
+
+        dialog.setContentPane(content);
+        dialog.pack();
+        dialog.setSize(Math.max(400, dialog.getWidth()), dialog.getHeight());
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
     }
 
     private void showSuccess(String message) {
-        JOptionPane.showMessageDialog(this, message, "Success", JOptionPane.INFORMATION_MESSAGE);
+        // Create a custom styled success dialog
+        JDialog dialog = new JDialog(this, "Flight Operation Complete", true);
+        dialog.setUndecorated(true);
+
+        // Main content with rounded background and gradient
+        JPanel content = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                int arc = 16;
+                // shadow
+                g2.setColor(new Color(0, 0, 0, 20));
+                g2.fillRoundRect(4, 8, getWidth() - 8, getHeight() - 8, arc, arc);
+                // background with subtle gradient
+                GradientPaint gradient = new GradientPaint(0, 0, Color.WHITE, 0, getHeight(), new Color(248, 255, 248));
+                g2.setPaint(gradient);
+                g2.fillRoundRect(0, 0, getWidth() - 8, getHeight() - 12, arc, arc);
+                g2.dispose();
+            }
+        };
+        content.setLayout(new BorderLayout());
+        content.setBorder(new EmptyBorder(18, 20, 16, 20));
+
+        // Success header
+        JPanel header = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 8));
+        header.setOpaque(false);
+        JLabel successIcon = new JLabel("✈✅");
+        successIcon.setFont(new Font("Arial", Font.BOLD, 22));
+        header.add(successIcon);
+        JLabel title = new JLabel("Operation Successful");
+        title.setFont(new Font("Arial", Font.BOLD, 16));
+        title.setForeground(DARK_BLUE);
+        header.add(title);
+
+        content.add(header, BorderLayout.NORTH);
+
+        // Message
+        JLabel msgLabel = new JLabel(message);
+        msgLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        msgLabel.setBorder(new EmptyBorder(8, 6, 12, 6));
+        content.add(msgLabel, BorderLayout.CENTER);
+
+        // Button panel
+        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        btnPanel.setOpaque(false);
+        JButton ok = createStyledButton("Excellent!", SUCCESS_GREEN, Color.WHITE, 14);
+        ok.setPreferredSize(new Dimension(110, 36));
+        ok.addActionListener(e -> dialog.dispose());
+        btnPanel.add(ok);
+        content.add(btnPanel, BorderLayout.SOUTH);
+
+        dialog.setContentPane(content);
+        dialog.pack();
+        dialog.setSize(Math.max(380, dialog.getWidth()), dialog.getHeight());
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+    }
+
+    /**
+     * Creates a styled button with hover effects and modern design
+     */
+    private JButton createStyledButton(String text, Color bgColor, Color textColor, int fontSize) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("Arial", Font.BOLD, fontSize));
+        button.setBackground(bgColor);
+        button.setForeground(textColor);
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        button.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createRaisedBevelBorder(),
+            BorderFactory.createEmptyBorder(8, 15, 8, 15)
+        ));
+
+        // Add hover effects
+        Color originalBg = bgColor;
+        Color hoverColor = createHoverColor(bgColor);
+
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                button.setBackground(hoverColor);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                button.setBackground(originalBg);
+            }
+        });
+
+        return button;
+    }
+
+    /**
+     * Creates a hover color that's slightly lighter than the original
+     */
+    private Color createHoverColor(Color originalColor) {
+        if (originalColor.equals(PRIMARY_BLUE)) {
+            return HOVER_BLUE;
+        } else if (originalColor.equals(ACCENT_ORANGE)) {
+            return new Color(255, 167, 38);
+        } else if (originalColor.equals(SUCCESS_GREEN)) {
+            return new Color(102, 187, 106);
+        } else if (originalColor.equals(DANGER_RED)) {
+            return new Color(255, 87, 87);
+        } else if (originalColor.equals(LIGHT_GRAY)) {
+            return new Color(224, 224, 224);
+        } else {
+            // For other colors, create a lighter version
+            int r = Math.min(255, originalColor.getRed() + 20);
+            int g = Math.min(255, originalColor.getGreen() + 20);
+            int b = Math.min(255, originalColor.getBlue() + 20);
+            return new Color(r, g, b);
+        }
+    }
+
+    /**
+     * Creates a styled text field with placeholder support
+     */
+    private JTextField createStyledTextField(String placeholder) {
+        JTextField field = new JTextField(25);
+        field.setFont(new Font("Arial", Font.PLAIN, 14));
+        field.setPreferredSize(new Dimension(320, 40));
+        field.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(LIGHT_GRAY, 2),
+            BorderFactory.createEmptyBorder(8, 12, 8, 12)
+        ));
+        
+        // Set placeholder text
+        field.setText(placeholder);
+        field.setForeground(Color.GRAY);
+        
+        // Add focus effects
+        field.addFocusListener(new java.awt.event.FocusAdapter() {
+            @Override
+            public void focusGained(java.awt.event.FocusEvent e) {
+                if (field.getText().equals(placeholder)) {
+                    field.setText("");
+                    field.setForeground(Color.BLACK);
+                }
+                field.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(PRIMARY_BLUE, 2),
+                    BorderFactory.createEmptyBorder(8, 12, 8, 12)
+                ));
+            }
+            
+            @Override
+            public void focusLost(java.awt.event.FocusEvent e) {
+                if (field.getText().trim().isEmpty()) {
+                    field.setText(placeholder);
+                    field.setForeground(Color.GRAY);
+                }
+                field.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(LIGHT_GRAY, 2),
+                    BorderFactory.createEmptyBorder(8, 12, 8, 12)
+                ));
+            }
+        });
+        
+        return field;
+    }
+
+    /**
+     * Creates a styled combo box with modern design
+     */
+    private <T> JComboBox<T> createStyledComboBox() {
+        JComboBox<T> comboBox = new JComboBox<>();
+        comboBox.setFont(new Font("Arial", Font.PLAIN, 14));
+        comboBox.setPreferredSize(new Dimension(320, 40));
+        comboBox.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(LIGHT_GRAY, 2),
+            BorderFactory.createEmptyBorder(2, 8, 2, 2)
+        ));
+        comboBox.setBackground(Color.WHITE);
+        
+        return comboBox;
+    }
+
+    private JPanel createHeaderSection() {
+        JPanel headerPanel = new JPanel();
+        headerPanel.setLayout(new BorderLayout());
+        headerPanel.setBackground(BACKGROUND_GRAY);
+        headerPanel.setBorder(new EmptyBorder(0, 0, 25, 0));
+
+        // Title section with flight icon
+        JPanel titlePanel = new JPanel();
+        titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
+        titlePanel.setBackground(BACKGROUND_GRAY);
+
+        JLabel titleLabel = new JLabel("✈ " + (isEditMode ? "Edit Flight Schedule" : "Create New Flight"));
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 22));
+        titleLabel.setForeground(DARK_BLUE);
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JLabel subtitleLabel = new JLabel(isEditMode ? 
+            "Update flight information and schedule details" : 
+            "Add a new flight to the network schedule");
+        subtitleLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        subtitleLabel.setForeground(new Color(100, 100, 100));
+        subtitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        titlePanel.add(titleLabel);
+        titlePanel.add(Box.createVerticalStrut(8));
+        titlePanel.add(subtitleLabel);
+
+        // Admin badge
+        JPanel adminPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        adminPanel.setBackground(BACKGROUND_GRAY);
+        
+        JLabel adminBadge = new JLabel("👨‍💼 Admin Management");
+        adminBadge.setFont(new Font("Arial", Font.BOLD, 12));
+        adminBadge.setForeground(DARK_BLUE);
+        adminBadge.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(DARK_BLUE, 1),
+            new EmptyBorder(4, 8, 4, 8)
+        ));
+        adminBadge.setBackground(new Color(225, 240, 255));
+        adminBadge.setOpaque(true);
+        adminPanel.add(adminBadge);
+
+        headerPanel.add(titlePanel, BorderLayout.CENTER);
+        headerPanel.add(adminPanel, BorderLayout.SOUTH);
+
+        return headerPanel;
+    }
+
+    private JPanel createContentSection() {
+        JPanel contentPanel = new JPanel(new BorderLayout());
+        contentPanel.setBackground(CARD_WHITE);
+        contentPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(LIGHT_GRAY, 1),
+            new EmptyBorder(25, 25, 25, 25)
+        ));
+
+        // Form panel with enhanced layout
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBackground(CARD_WHITE);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(15, 10, 15, 10);
+        gbc.anchor = GridBagConstraints.WEST;
+
+        // Flight Details Section
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
+        JLabel flightDetailsLabel = new JLabel("✈ Flight Details");
+        flightDetailsLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        flightDetailsLabel.setForeground(DARK_BLUE);
+        flightDetailsLabel.setBorder(new EmptyBorder(0, 0, 10, 0));
+        formPanel.add(flightDetailsLabel, gbc);
+
+        // Flight Code
+        gbc.gridy = 1; gbc.gridwidth = 1;
+        JLabel codeLabel = new JLabel("Flight Code");
+        codeLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        codeLabel.setForeground(DARK_BLUE);
+        formPanel.add(codeLabel, gbc);
+
+        gbc.gridx = 1;
+        formPanel.add(flightCodeField, gbc);
+
+        // Flight Name
+        gbc.gridx = 0; gbc.gridy = 2;
+        JLabel nameLabel = new JLabel("Flight Name");
+        nameLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        nameLabel.setForeground(DARK_BLUE);
+        formPanel.add(nameLabel, gbc);
+
+        gbc.gridx = 1;
+        formPanel.add(flightNameField, gbc);
+
+        // Airline Company
+        gbc.gridx = 0; gbc.gridy = 3;
+        JLabel companyLabel = new JLabel("Airline Company");
+        companyLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        companyLabel.setForeground(DARK_BLUE);
+        formPanel.add(companyLabel, gbc);
+
+        gbc.gridx = 1;
+        formPanel.add(companyComboBox, gbc);
+
+        // Route Information Section
+        gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2;
+        JLabel routeLabel = new JLabel("🗺 Route Information");
+        routeLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        routeLabel.setForeground(DARK_BLUE);
+        routeLabel.setBorder(new EmptyBorder(20, 0, 10, 0));
+        formPanel.add(routeLabel, gbc);
+
+        // Departure Airport
+        gbc.gridy = 5; gbc.gridwidth = 1;
+        JLabel depAirportLabel = new JLabel("Departure Airport");
+        depAirportLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        depAirportLabel.setForeground(DARK_BLUE);
+        formPanel.add(depAirportLabel, gbc);
+
+        gbc.gridx = 1;
+        formPanel.add(departureAirportComboBox, gbc);
+
+        // Destination Airport
+        gbc.gridx = 0; gbc.gridy = 6;
+        JLabel destAirportLabel = new JLabel("Destination Airport");
+        destAirportLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        destAirportLabel.setForeground(DARK_BLUE);
+        formPanel.add(destAirportLabel, gbc);
+
+        gbc.gridx = 1;
+        formPanel.add(destinationAirportComboBox, gbc);
+
+        // Schedule Section
+        gbc.gridx = 0; gbc.gridy = 7; gbc.gridwidth = 2;
+        JLabel scheduleLabel = new JLabel("⏰ Schedule");
+        scheduleLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        scheduleLabel.setForeground(DARK_BLUE);
+        scheduleLabel.setBorder(new EmptyBorder(20, 0, 10, 0));
+        formPanel.add(scheduleLabel, gbc);
+
+        // Departure Time
+        gbc.gridy = 8; gbc.gridwidth = 1;
+        JLabel depTimeLabel = new JLabel("Departure Time");
+        depTimeLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        depTimeLabel.setForeground(DARK_BLUE);
+        formPanel.add(depTimeLabel, gbc);
+
+        gbc.gridx = 1;
+        JPanel depTimePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        depTimePanel.setBackground(CARD_WHITE);
+        depTimePanel.add(departureTimeField);
+        JLabel depTimeHint = new JLabel("  (YYYY-MM-DD HH:MM)");
+        depTimeHint.setFont(new Font("Arial", Font.ITALIC, 12));
+        depTimeHint.setForeground(new Color(120, 120, 120));
+        depTimePanel.add(depTimeHint);
+        formPanel.add(depTimePanel, gbc);
+
+        // Arrival Time
+        gbc.gridx = 0; gbc.gridy = 9;
+        JLabel arrTimeLabel = new JLabel("Arrival Time");
+        arrTimeLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        arrTimeLabel.setForeground(DARK_BLUE);
+        formPanel.add(arrTimeLabel, gbc);
+
+        gbc.gridx = 1;
+        JPanel arrTimePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        arrTimePanel.setBackground(CARD_WHITE);
+        arrTimePanel.add(destinationTimeField);
+        JLabel arrTimeHint = new JLabel("  (YYYY-MM-DD HH:MM)");
+        arrTimeHint.setFont(new Font("Arial", Font.ITALIC, 12));
+        arrTimeHint.setForeground(new Color(120, 120, 120));
+        arrTimePanel.add(arrTimeHint);
+        formPanel.add(arrTimePanel, gbc);
+
+        // Pricing & Capacity Section
+        gbc.gridx = 0; gbc.gridy = 10; gbc.gridwidth = 2;
+        JLabel pricingLabel = new JLabel("💰 Pricing & Capacity");
+        pricingLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        pricingLabel.setForeground(DARK_BLUE);
+        pricingLabel.setBorder(new EmptyBorder(20, 0, 10, 0));
+        formPanel.add(pricingLabel, gbc);
+
+        // Capacity
+        gbc.gridy = 11; gbc.gridwidth = 1;
+        JLabel capacityLabel = new JLabel("Passenger Capacity");
+        capacityLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        capacityLabel.setForeground(DARK_BLUE);
+        formPanel.add(capacityLabel, gbc);
+
+        gbc.gridx = 1;
+        formPanel.add(capacityField, gbc);
+
+        // Price
+        gbc.gridx = 0; gbc.gridy = 12;
+        JLabel priceLabel = new JLabel("Ticket Price (USD)");
+        priceLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        priceLabel.setForeground(DARK_BLUE);
+        formPanel.add(priceLabel, gbc);
+
+        gbc.gridx = 1;
+        formPanel.add(priceField, gbc);
+
+        contentPanel.add(formPanel, BorderLayout.CENTER);
+        return contentPanel;
+    }
+
+    private JPanel createButtonSection() {
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 0));
+        buttonPanel.setBackground(BACKGROUND_GRAY);
+        buttonPanel.setBorder(new EmptyBorder(25, 0, 0, 0));
+
+        // Enhanced button sizing
+        saveButton.setPreferredSize(new Dimension(160, 45));
+        cancelButton.setPreferredSize(new Dimension(120, 45));
+
+        buttonPanel.add(saveButton);
+        buttonPanel.add(cancelButton);
+
+        return buttonPanel;
     }
 }
