@@ -427,12 +427,12 @@ public class ReportsPanel extends JPanel {
         titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
         titlePanel.setBackground(BACKGROUND_GRAY);
 
-        JLabel titleLabel = new JLabel("📊 System Reports & Analytics");
+        JLabel titleLabel = new JLabel("System Reports & Analytics");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 26));
         titleLabel.setForeground(DARK_BLUE);
         titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel subtitleLabel = new JLabel("Real-time system statistics and performance metrics");
+        JLabel subtitleLabel = new JLabel("Go-Aero System statistics and performance metrics");
         subtitleLabel.setFont(new Font("Arial", Font.PLAIN, 14));
         subtitleLabel.setForeground(new Color(100, 100, 100));
         subtitleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -494,7 +494,7 @@ public class ReportsPanel extends JPanel {
         ));
 
         // Card header
-        JLabel cardTitle = new JLabel("🏢 System Overview");
+        JLabel cardTitle = new JLabel("System Overview");
         cardTitle.setFont(new Font("Arial", Font.BOLD, 16));
         cardTitle.setForeground(DARK_BLUE);
 
