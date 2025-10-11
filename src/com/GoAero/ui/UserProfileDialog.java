@@ -7,15 +7,28 @@ import com.GoAero.util.PasswordUtil;
 import com.GoAero.util.ValidationUtil;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 /**
- * Dialog for users to view and edit their profile information
+ * Dialog for users to view and edit their profile information with modern UI design
  */
 public class UserProfileDialog extends JDialog {
+    // Professional color scheme (consistent with other pages)
+    private static final Color PRIMARY_BLUE = new Color(25, 118, 210);
+    private static final Color ACCENT_ORANGE = new Color(255, 152, 0);
+    private static final Color DARK_BLUE = new Color(13, 71, 161);
+    private static final Color LIGHT_GRAY = new Color(245, 245, 245);
+    private static final Color HOVER_BLUE = new Color(30, 136, 229);
+    private static final Color SUCCESS_GREEN = new Color(76, 175, 80);
+    private static final Color BACKGROUND_GRAY = new Color(250, 250, 250);
+    private static final Color CARD_WHITE = Color.WHITE;
+    private static final Color DANGER_RED = new Color(244, 67, 54);
     private User currentUser;
     private UserDAO userDAO;
     
@@ -37,39 +50,112 @@ public class UserProfileDialog extends JDialog {
     }
 
     private void initializeComponents() {
-        setSize(450, 500);
+        setSize(500, 600);
         setLocationRelativeTo(getParent());
         setResizable(false);
 
-        firstNameField = new JTextField(20);
-        lastNameField = new JTextField(20);
-        emailField = new JTextField(20);
-        phoneField = new JTextField(20);
-        dobField = new JTextField(20);
-        
-        currentPasswordField = new JPasswordField(20);
-        newPasswordField = new JPasswordField(20);
-        confirmPasswordField = new JPasswordField(20);
-        
-        saveButton = new JButton("Save Changes");
-        cancelButton = new JButton("Cancel");
-        changePasswordButton = new JButton("Change Password");
+        // Modern styled text fields
+        firstNameField = createStyledTextField(20);
+        lastNameField = createStyledTextField(20);
+        emailField = createStyledTextField(20);
+        phoneField = createStyledTextField(20);
+        dobField = createStyledTextField(20);
+
+        // Modern styled password fields
+        currentPasswordField = createStyledPasswordField(20);
+        newPasswordField = createStyledPasswordField(20);
+        confirmPasswordField = createStyledPasswordField(20);
+
+        // Modern styled buttons
+        saveButton = createStyledButton("💾 Save Changes", SUCCESS_GREEN, Color.WHITE, 14);
+        saveButton.setPreferredSize(new Dimension(150, 40));
+
+        cancelButton = createStyledButton("❌ Cancel", new Color(108, 117, 125), Color.WHITE, 14);
+        cancelButton.setPreferredSize(new Dimension(120, 40));
+
+        changePasswordButton = createStyledButton("🔒 Change Password", PRIMARY_BLUE, Color.WHITE, 14);
+        changePasswordButton.setPreferredSize(new Dimension(180, 40));
+    }
+
+    private JTextField createStyledTextField(int columns) {
+        JTextField field = new JTextField(columns);
+        field.setFont(new Font("Arial", Font.PLAIN, 14));
+        field.setPreferredSize(new Dimension(250, 35));
+        field.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(LIGHT_GRAY, 1),
+            BorderFactory.createEmptyBorder(5, 10, 5, 10)
+        ));
+        return field;
+    }
+
+    private JPasswordField createStyledPasswordField(int columns) {
+        JPasswordField field = new JPasswordField(columns);
+        field.setFont(new Font("Arial", Font.PLAIN, 14));
+        field.setPreferredSize(new Dimension(250, 35));
+        field.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(LIGHT_GRAY, 1),
+            BorderFactory.createEmptyBorder(5, 10, 5, 10)
+        ));
+        return field;
     }
 
     private void setupLayout() {
         setLayout(new BorderLayout());
-
-        // Title panel
-        JPanel titlePanel = new JPanel();
-        JLabel titleLabel = new JLabel("My Profile");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        titlePanel.add(titleLabel);
-        add(titlePanel, BorderLayout.NORTH);
+        getContentPane().setBackground(BACKGROUND_GRAY);
 
         // Main content panel
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBackground(BACKGROUND_GRAY);
+        mainPanel.setBorder(new EmptyBorder(25, 30, 25, 30));
+
+        // Header section
+        JPanel headerSection = createHeaderSection();
+        mainPanel.add(headerSection, BorderLayout.NORTH);
+
+        // Content section
+        JPanel contentSection = createContentSection();
+        mainPanel.add(contentSection, BorderLayout.CENTER);
+
+        // Button section
+        JPanel buttonSection = createButtonSection();
+        mainPanel.add(buttonSection, BorderLayout.SOUTH);
+
+        add(mainPanel, BorderLayout.CENTER);
+    }
+
+    private JPanel createHeaderSection() {
+        JPanel headerPanel = new JPanel();
+        headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
+        headerPanel.setBackground(BACKGROUND_GRAY);
+        headerPanel.setBorder(new EmptyBorder(0, 0, 20, 0));
+
+        // Title
+        JLabel titleLabel = new JLabel("My Profile");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        titleLabel.setForeground(DARK_BLUE);
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Subtitle
+        JLabel subtitleLabel = new JLabel("Manage your account information");
+        subtitleLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        subtitleLabel.setForeground(new Color(100, 100, 100));
+        subtitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        headerPanel.add(titleLabel);
+        headerPanel.add(Box.createVerticalStrut(8));
+        headerPanel.add(subtitleLabel);
+
+        return headerPanel;
+    }
+
+    private JPanel createContentSection() {
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-        contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        contentPanel.setBackground(CARD_WHITE);
+        contentPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(LIGHT_GRAY, 1),
+            new EmptyBorder(20, 25, 20, 25)
+        ));
 
         // Profile information panel
         JPanel profilePanel = createProfilePanel();
@@ -80,14 +166,30 @@ public class UserProfileDialog extends JDialog {
         passwordPanel.setVisible(false);
         contentPanel.add(passwordPanel);
 
-        add(contentPanel, BorderLayout.CENTER);
+        return contentPanel;
+    }
 
-        // Button panel
-        JPanel buttonPanel = new JPanel(new FlowLayout());
-        buttonPanel.add(saveButton);
-        buttonPanel.add(changePasswordButton);
-        buttonPanel.add(cancelButton);
-        add(buttonPanel, BorderLayout.SOUTH);
+    private JPanel createButtonSection() {
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BorderLayout());
+        buttonPanel.setBackground(BACKGROUND_GRAY);
+        buttonPanel.setBorder(new EmptyBorder(20, 0, 0, 0));
+
+        // Change password button (left)
+        JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        leftPanel.setBackground(BACKGROUND_GRAY);
+        leftPanel.add(changePasswordButton);
+
+        // Save and cancel buttons (right)
+        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        rightPanel.setBackground(BACKGROUND_GRAY);
+        rightPanel.add(cancelButton);
+        rightPanel.add(saveButton);
+
+        buttonPanel.add(leftPanel, BorderLayout.WEST);
+        buttonPanel.add(rightPanel, BorderLayout.EAST);
+
+        return buttonPanel;
     }
 
     private JPanel createProfilePanel() {
@@ -351,5 +453,57 @@ public class UserProfileDialog extends JDialog {
 
     private void showSuccess(String message) {
         JOptionPane.showMessageDialog(this, message, "Success", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    /**
+     * Creates a styled button with hover effects and modern design
+     */
+    private JButton createStyledButton(String text, Color bgColor, Color textColor, int fontSize) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("Arial", Font.BOLD, fontSize));
+        button.setBackground(bgColor);
+        button.setForeground(textColor);
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        button.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createRaisedBevelBorder(),
+            BorderFactory.createEmptyBorder(8, 15, 8, 15)
+        ));
+
+        // Add hover effects
+        Color originalBg = bgColor;
+        Color hoverColor = createHoverColor(bgColor);
+
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                button.setBackground(hoverColor);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                button.setBackground(originalBg);
+            }
+        });
+
+        return button;
+    }
+
+    /**
+     * Creates a hover color that's slightly lighter than the original
+     */
+    private Color createHoverColor(Color originalColor) {
+        if (originalColor.equals(PRIMARY_BLUE)) {
+            return HOVER_BLUE;
+        } else if (originalColor.equals(SUCCESS_GREEN)) {
+            return new Color(102, 187, 106);
+        } else {
+            // For other colors, create a lighter version
+            int r = Math.min(255, originalColor.getRed() + 20);
+            int g = Math.min(255, originalColor.getGreen() + 20);
+            int b = Math.min(255, originalColor.getBlue() + 20);
+            return new Color(r, g, b);
+        }
     }
 }
