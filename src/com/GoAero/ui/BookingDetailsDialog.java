@@ -3,13 +3,27 @@ package com.GoAero.ui;
 import com.GoAero.model.Booking;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Dialog to display detailed booking information
+ * Dialog to display detailed booking information with modern UI design
  */
 public class BookingDetailsDialog extends JDialog {
+    // Professional color scheme (consistent with other GoAero pages)
+    private static final Color PRIMARY_BLUE = new Color(25, 118, 210);
+    private static final Color ACCENT_ORANGE = new Color(255, 152, 0);
+    private static final Color DARK_BLUE = new Color(13, 71, 161);
+    private static final Color LIGHT_GRAY = new Color(245, 245, 245);
+    private static final Color HOVER_BLUE = new Color(30, 136, 229);
+    private static final Color SUCCESS_GREEN = new Color(76, 175, 80);
+    private static final Color BACKGROUND_GRAY = new Color(250, 250, 250);
+    private static final Color CARD_WHITE = Color.WHITE;
+    private static final Color DANGER_RED = new Color(244, 67, 54);
+    private static final Color WARNING_ORANGE = new Color(255, 193, 7);
     private Booking booking;
     private JButton closeButton;
 
@@ -22,210 +36,485 @@ public class BookingDetailsDialog extends JDialog {
     }
 
     private void initializeComponents() {
-        setSize(500, 600);
+        setSize(650, 750);
         setLocationRelativeTo(getParent());
         setResizable(false);
 
-        closeButton = new JButton("Close");
+        // Create modern styled close button
+        closeButton = createStyledButton("✈ Close", PRIMARY_BLUE, Color.WHITE, 14);
+        closeButton.setPreferredSize(new Dimension(120, 40));
     }
 
     private void setupLayout() {
         setLayout(new BorderLayout());
+        getContentPane().setBackground(BACKGROUND_GRAY);
 
-        // Main content panel
-        JPanel contentPanel = new JPanel();
-        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-        contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        // Main content panel with modern design
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBackground(BACKGROUND_GRAY);
+        mainPanel.setBorder(new EmptyBorder(25, 30, 30, 30));
 
-        // Title
-        JLabel titleLabel = new JLabel("Booking Details");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        contentPanel.add(titleLabel);
-        contentPanel.add(Box.createVerticalStrut(20));
+        // Header section
+        JPanel headerSection = createHeaderSection();
+        mainPanel.add(headerSection, BorderLayout.NORTH);
 
-        // Booking Information Panel
-        JPanel bookingInfoPanel = createBookingInfoPanel();
-        contentPanel.add(bookingInfoPanel);
-        contentPanel.add(Box.createVerticalStrut(15));
+        // Content section with booking details
+        JPanel contentSection = createContentSection();  
+        mainPanel.add(contentSection, BorderLayout.CENTER);
 
-        // Flight Information Panel
-        JPanel flightInfoPanel = createFlightInfoPanel();
-        contentPanel.add(flightInfoPanel);
-        contentPanel.add(Box.createVerticalStrut(15));
+        // Button section
+        JPanel buttonSection = createButtonSection();
+        mainPanel.add(buttonSection, BorderLayout.SOUTH);
 
-        // Passenger Information Panel
-        JPanel passengerInfoPanel = createPassengerInfoPanel();
-        contentPanel.add(passengerInfoPanel);
-        contentPanel.add(Box.createVerticalStrut(15));
-
-        // Status Information Panel
-        JPanel statusInfoPanel = createStatusInfoPanel();
-        contentPanel.add(statusInfoPanel);
-
-        add(contentPanel, BorderLayout.CENTER);
-
-        // Button panel
-        JPanel buttonPanel = new JPanel(new FlowLayout());
-        buttonPanel.add(closeButton);
-        add(buttonPanel, BorderLayout.SOUTH);
+        add(mainPanel, BorderLayout.CENTER);
     }
 
-    private JPanel createBookingInfoPanel() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Booking Information"));
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 10, 5, 10);
-        gbc.anchor = GridBagConstraints.WEST;
+    /**
+     * Creates a styled button with hover effects and modern design
+     */
+    private JButton createStyledButton(String text, Color bgColor, Color textColor, int fontSize) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("Arial", Font.BOLD, fontSize));
+        button.setBackground(bgColor);
+        button.setForeground(textColor);
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        button.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createRaisedBevelBorder(),
+            BorderFactory.createEmptyBorder(8, 15, 8, 15)
+        ));
 
-        // PNR
-        gbc.gridx = 0; gbc.gridy = 0;
-        panel.add(new JLabel("PNR:"), gbc);
-        gbc.gridx = 1;
-        JLabel pnrLabel = new JLabel(booking.getPnr());
-        pnrLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        panel.add(pnrLabel, gbc);
+        // Add hover effects
+        Color originalBg = bgColor;
+        Color hoverColor = createHoverColor(bgColor);
+
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                button.setBackground(hoverColor);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                button.setBackground(originalBg);
+            }
+        });
+
+        return button;
+    }
+
+    /**
+     * Creates a hover color that's slightly lighter than the original
+     */
+    private Color createHoverColor(Color originalColor) {
+        if (originalColor.equals(PRIMARY_BLUE)) {
+            return HOVER_BLUE;
+        } else {
+            // For other colors, create a lighter version
+            int r = Math.min(255, originalColor.getRed() + 20);
+            int g = Math.min(255, originalColor.getGreen() + 20);
+            int b = Math.min(255, originalColor.getBlue() + 20);
+            return new Color(r, g, b);
+        }
+    }
+
+    private JPanel createHeaderSection() {
+        JPanel headerPanel = new JPanel();
+        headerPanel.setLayout(new BorderLayout());
+        headerPanel.setBackground(BACKGROUND_GRAY);
+        headerPanel.setBorder(new EmptyBorder(0, 0, 25, 0));
+
+        // Title section with booking icon
+        JPanel titlePanel = new JPanel();
+        titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
+        titlePanel.setBackground(BACKGROUND_GRAY);
+
+        JLabel titleLabel = new JLabel("📋 Booking Confirmation Details");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        titleLabel.setForeground(DARK_BLUE);
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JLabel subtitleLabel = new JLabel("Complete reservation information and travel itinerary");
+        subtitleLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        subtitleLabel.setForeground(new Color(100, 100, 100));
+        subtitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        titlePanel.add(titleLabel);
+        titlePanel.add(Box.createVerticalStrut(8));
+        titlePanel.add(subtitleLabel);
+
+        // PNR highlight panel
+        JPanel pnrPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        pnrPanel.setBackground(BACKGROUND_GRAY);
+        
+        JLabel pnrBadge = new JLabel("PNR: " + booking.getPnr());
+        pnrBadge.setFont(new Font("Arial", Font.BOLD, 16));
+        pnrBadge.setForeground(ACCENT_ORANGE);
+        pnrBadge.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(ACCENT_ORANGE, 2),
+            new EmptyBorder(8, 15, 8, 15)
+        ));
+        pnrBadge.setBackground(new Color(255, 248, 225));
+        pnrBadge.setOpaque(true);
+        pnrPanel.add(pnrBadge);
+
+        headerPanel.add(titlePanel, BorderLayout.CENTER);
+        headerPanel.add(pnrPanel, BorderLayout.SOUTH);
+
+        return headerPanel;
+    }
+
+    private JPanel createContentSection() {
+        JPanel contentContainer = new JPanel(new BorderLayout());
+        contentContainer.setBackground(BACKGROUND_GRAY);
+
+        // Create scroll pane for content
+        JPanel scrollContent = new JPanel();
+        scrollContent.setLayout(new BoxLayout(scrollContent, BoxLayout.Y_AXIS));
+        scrollContent.setBackground(BACKGROUND_GRAY);
+
+        // Booking Summary Card
+        JPanel bookingSummaryCard = createBookingSummaryCard();
+        scrollContent.add(bookingSummaryCard);
+        scrollContent.add(Box.createVerticalStrut(20));
+
+        // Flight Details Card
+        JPanel flightDetailsCard = createFlightDetailsCard();
+        scrollContent.add(flightDetailsCard);
+        scrollContent.add(Box.createVerticalStrut(20));
+
+        // Passenger Information Card
+        JPanel passengerCard = createPassengerCard();
+        scrollContent.add(passengerCard);
+        scrollContent.add(Box.createVerticalStrut(20));
+
+        // Status and Payment Card
+        JPanel statusCard = createStatusCard();
+        scrollContent.add(statusCard);
+
+        JScrollPane scrollPane = new JScrollPane(scrollContent);
+        scrollPane.setBorder(null);
+        scrollPane.setBackground(BACKGROUND_GRAY);
+        scrollPane.getViewport().setBackground(BACKGROUND_GRAY);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+        contentContainer.add(scrollPane, BorderLayout.CENTER);
+        return contentContainer;
+    }
+
+    private JPanel createBookingSummaryCard() {
+        JPanel card = new JPanel(new BorderLayout());
+        card.setBackground(CARD_WHITE);
+        card.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(LIGHT_GRAY, 1),
+            new EmptyBorder(20, 25, 20, 25)
+        ));
+
+        // Card header
+        JLabel headerLabel = new JLabel("💰 Booking Summary");
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        headerLabel.setForeground(DARK_BLUE);
+        headerLabel.setBorder(new EmptyBorder(0, 0, 15, 0));
+
+        // Content panel
+        JPanel contentPanel = new JPanel(new GridLayout(3, 2, 20, 15));
+        contentPanel.setBackground(CARD_WHITE);
 
         // Booking Date
-        gbc.gridx = 0; gbc.gridy = 1;
-        panel.add(new JLabel("Booking Date:"), gbc);
-        gbc.gridx = 1;
-        panel.add(new JLabel(booking.getDateOfBooking().toLocalDateTime()
-            .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))), gbc);
+        JLabel bookingDateLabel = new JLabel("Booking Date");
+        bookingDateLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        bookingDateLabel.setForeground(DARK_BLUE);
+        contentPanel.add(bookingDateLabel);
 
-        // Amount
-        gbc.gridx = 0; gbc.gridy = 2;
-        panel.add(new JLabel("Total Amount:"), gbc);
-        gbc.gridx = 1;
-        JLabel amountLabel = new JLabel(String.format("$%.2f", booking.getAmount()));
+        JLabel bookingDateValue = new JLabel(booking.getDateOfBooking().toLocalDateTime()
+            .format(DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm")));
+        bookingDateValue.setFont(new Font("Arial", Font.PLAIN, 14));
+        contentPanel.add(bookingDateValue);
+
+        // Total Amount
+        JLabel amountLabel = new JLabel("Total Amount");
         amountLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        amountLabel.setForeground(new Color(0, 128, 0));
-        panel.add(amountLabel, gbc);
+        amountLabel.setForeground(DARK_BLUE);
+        contentPanel.add(amountLabel);
 
-        return panel;
+        JLabel amountValue = new JLabel(String.format("$%.2f USD", booking.getAmount()));
+        amountValue.setFont(new Font("Arial", Font.BOLD, 16));
+        amountValue.setForeground(SUCCESS_GREEN);
+        contentPanel.add(amountValue);
+
+        // Booking Reference
+        JLabel referenceLabel = new JLabel("Reference Number");
+        referenceLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        referenceLabel.setForeground(DARK_BLUE);
+        contentPanel.add(referenceLabel);
+
+        JLabel referenceValue = new JLabel(booking.getPnr());
+        referenceValue.setFont(new Font("Arial", Font.BOLD, 14));
+        referenceValue.setForeground(PRIMARY_BLUE);
+        contentPanel.add(referenceValue);
+
+        card.add(headerLabel, BorderLayout.NORTH);
+        card.add(contentPanel, BorderLayout.CENTER);
+
+        return card;
     }
 
-    private JPanel createFlightInfoPanel() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Flight Information"));
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 10, 5, 10);
-        gbc.anchor = GridBagConstraints.WEST;
+    private JPanel createFlightDetailsCard() {
+        JPanel card = new JPanel(new BorderLayout());
+        card.setBackground(CARD_WHITE);
+        card.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(LIGHT_GRAY, 1),
+            new EmptyBorder(20, 25, 20, 25)
+        ));
+
+        // Card header
+        JLabel headerLabel = new JLabel("✈ Flight Information");
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        headerLabel.setForeground(DARK_BLUE);
+        headerLabel.setBorder(new EmptyBorder(0, 0, 15, 0));
+
+        // Content panel
+        JPanel contentPanel = new JPanel(new GridLayout(6, 2, 20, 15));
+        contentPanel.setBackground(CARD_WHITE);
 
         // Flight Code
-        gbc.gridx = 0; gbc.gridy = 0;
-        panel.add(new JLabel("Flight Code:"), gbc);
-        gbc.gridx = 1;
-        panel.add(new JLabel(booking.getFlightCode()), gbc);
+        JLabel codeLabel = new JLabel("Flight Code");
+        codeLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        codeLabel.setForeground(DARK_BLUE);
+        contentPanel.add(codeLabel);
+
+        JLabel codeValue = new JLabel(booking.getFlightCode());
+        codeValue.setFont(new Font("Arial", Font.BOLD, 14));
+        codeValue.setForeground(PRIMARY_BLUE);
+        contentPanel.add(codeValue);
 
         // Flight Name
-        gbc.gridx = 0; gbc.gridy = 1;
-        panel.add(new JLabel("Flight Name:"), gbc);
-        gbc.gridx = 1;
-        panel.add(new JLabel(booking.getFlightName() != null ? booking.getFlightName() : "N/A"), gbc);
+        JLabel nameLabel = new JLabel("Flight Name");
+        nameLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        nameLabel.setForeground(DARK_BLUE);
+        contentPanel.add(nameLabel);
+
+        JLabel nameValue = new JLabel(booking.getFlightName() != null ? booking.getFlightName() : "N/A");
+        nameValue.setFont(new Font("Arial", Font.PLAIN, 14));
+        contentPanel.add(nameValue);
 
         // Airline
-        gbc.gridx = 0; gbc.gridy = 2;
-        panel.add(new JLabel("Airline:"), gbc);
-        gbc.gridx = 1;
-        panel.add(new JLabel(booking.getCompanyName() != null ? booking.getCompanyName() : "N/A"), gbc);
+        JLabel airlineLabel = new JLabel("Airline");
+        airlineLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        airlineLabel.setForeground(DARK_BLUE);
+        contentPanel.add(airlineLabel);
+
+        JLabel airlineValue = new JLabel(booking.getCompanyName() != null ? booking.getCompanyName() : "N/A");
+        airlineValue.setFont(new Font("Arial", Font.PLAIN, 14));
+        contentPanel.add(airlineValue);
 
         // Route
-        gbc.gridx = 0; gbc.gridy = 3;
-        panel.add(new JLabel("Route:"), gbc);
-        gbc.gridx = 1;
-        panel.add(new JLabel(booking.getFullRoute()), gbc);
+        JLabel routeLabel = new JLabel("Route");
+        routeLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        routeLabel.setForeground(DARK_BLUE);
+        contentPanel.add(routeLabel);
+
+        JLabel routeValue = new JLabel(booking.getFullRoute());
+        routeValue.setFont(new Font("Arial", Font.PLAIN, 14));
+        contentPanel.add(routeValue);
 
         // Departure
-        gbc.gridx = 0; gbc.gridy = 4;
-        panel.add(new JLabel("Departure:"), gbc);
-        gbc.gridx = 1;
-        panel.add(new JLabel(booking.getDepartureTime()
-            .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))), gbc);
+        JLabel depLabel = new JLabel("Departure");
+        depLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        depLabel.setForeground(DARK_BLUE);
+        contentPanel.add(depLabel);
+
+        JLabel depValue = new JLabel(booking.getDepartureTime()
+            .format(DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm")));
+        depValue.setFont(new Font("Arial", Font.PLAIN, 14));
+        contentPanel.add(depValue);
 
         // Arrival
-        gbc.gridx = 0; gbc.gridy = 5;
-        panel.add(new JLabel("Arrival:"), gbc);
-        gbc.gridx = 1;
-        panel.add(new JLabel(booking.getDestinationTime()
-            .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))), gbc);
+        JLabel arrLabel = new JLabel("Arrival");
+        arrLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        arrLabel.setForeground(DARK_BLUE);
+        contentPanel.add(arrLabel);
 
-        return panel;
+        JLabel arrValue = new JLabel(booking.getDestinationTime()
+            .format(DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm")));
+        arrValue.setFont(new Font("Arial", Font.PLAIN, 14));
+        contentPanel.add(arrValue);
+
+        card.add(headerLabel, BorderLayout.NORTH);
+        card.add(contentPanel, BorderLayout.CENTER);
+
+        return card;
     }
 
-    private JPanel createPassengerInfoPanel() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Passenger Information"));
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 10, 5, 10);
-        gbc.anchor = GridBagConstraints.WEST;
+    private JPanel createPassengerCard() {
+        JPanel card = new JPanel(new BorderLayout());
+        card.setBackground(CARD_WHITE);
+        card.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(LIGHT_GRAY, 1),
+            new EmptyBorder(20, 25, 20, 25)
+        ));
+
+        // Card header
+        JLabel headerLabel = new JLabel("👤 Passenger Information");
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        headerLabel.setForeground(DARK_BLUE);
+        headerLabel.setBorder(new EmptyBorder(0, 0, 15, 0));
+
+        // Content panel
+        JPanel contentPanel = new JPanel(new GridLayout(2, 2, 20, 15));
+        contentPanel.setBackground(CARD_WHITE);
 
         // Passenger Name
-        gbc.gridx = 0; gbc.gridy = 0;
-        panel.add(new JLabel("Passenger Name:"), gbc);
-        gbc.gridx = 1;
-        panel.add(new JLabel(booking.getUserFullName() != null ? booking.getUserFullName() : "N/A"), gbc);
+        JLabel nameLabel = new JLabel("Passenger Name");
+        nameLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        nameLabel.setForeground(DARK_BLUE);
+        contentPanel.add(nameLabel);
+
+        JLabel nameValue = new JLabel(booking.getUserFullName() != null ? booking.getUserFullName() : "N/A");
+        nameValue.setFont(new Font("Arial", Font.PLAIN, 14));
+        contentPanel.add(nameValue);
 
         // Email
-        gbc.gridx = 0; gbc.gridy = 1;
-        panel.add(new JLabel("Email:"), gbc);
-        gbc.gridx = 1;
-        panel.add(new JLabel(booking.getUserEmail() != null ? booking.getUserEmail() : "N/A"), gbc);
+        JLabel emailLabel = new JLabel("Email Address");
+        emailLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        emailLabel.setForeground(DARK_BLUE);
+        contentPanel.add(emailLabel);
 
-        return panel;
+        JLabel emailValue = new JLabel(booking.getUserEmail() != null ? booking.getUserEmail() : "N/A");
+        emailValue.setFont(new Font("Arial", Font.PLAIN, 14));
+        contentPanel.add(emailValue);
+
+        card.add(headerLabel, BorderLayout.NORTH);
+        card.add(contentPanel, BorderLayout.CENTER);
+
+        return card;
     }
 
-    private JPanel createStatusInfoPanel() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Status Information"));
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 10, 5, 10);
-        gbc.anchor = GridBagConstraints.WEST;
+    private JPanel createStatusCard() {
+        JPanel card = new JPanel(new BorderLayout());
+        card.setBackground(CARD_WHITE);
+        card.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(LIGHT_GRAY, 1),
+            new EmptyBorder(20, 25, 20, 25)
+        ));
+
+        // Card header
+        JLabel headerLabel = new JLabel("📊 Status Information");
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        headerLabel.setForeground(DARK_BLUE);
+        headerLabel.setBorder(new EmptyBorder(0, 0, 15, 0));
+
+        // Content panel with status badges
+        JPanel contentPanel = new JPanel(new GridLayout(2, 2, 20, 15));
+        contentPanel.setBackground(CARD_WHITE);
 
         // Booking Status
-        gbc.gridx = 0; gbc.gridy = 0;
-        panel.add(new JLabel("Booking Status:"), gbc);
-        gbc.gridx = 1;
-        JLabel bookingStatusLabel = new JLabel(booking.getBookingStatus().getDisplayName());
-        bookingStatusLabel.setFont(new Font("Arial", Font.BOLD, 12));
-        
-        // Set color based on status
-        switch (booking.getBookingStatus()) {
-            case CONFIRMED:
-                bookingStatusLabel.setForeground(new Color(0, 128, 0));
-                break;
-            case CANCELLED:
-                bookingStatusLabel.setForeground(Color.RED);
-                break;
-            case PENDING:
-                bookingStatusLabel.setForeground(new Color(255, 140, 0));
-                break;
-        }
-        panel.add(bookingStatusLabel, gbc);
+        JLabel bookingStatusLabel = new JLabel("Booking Status");
+        bookingStatusLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        bookingStatusLabel.setForeground(DARK_BLUE);
+        contentPanel.add(bookingStatusLabel);
+
+        JLabel bookingStatusBadge = new JLabel(booking.getBookingStatus().getDisplayName());
+        bookingStatusBadge.setFont(new Font("Arial", Font.BOLD, 12));
+        bookingStatusBadge.setHorizontalAlignment(SwingConstants.CENTER);
+        bookingStatusBadge.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(getStatusColor(booking.getBookingStatus().name()), 1),
+            new EmptyBorder(5, 10, 5, 10)
+        ));
+        bookingStatusBadge.setForeground(getStatusColor(booking.getBookingStatus().name()));
+        bookingStatusBadge.setBackground(getStatusBackgroundColor(booking.getBookingStatus().name()));
+        bookingStatusBadge.setOpaque(true);
+        contentPanel.add(bookingStatusBadge);
 
         // Payment Status
-        gbc.gridx = 0; gbc.gridy = 1;
-        panel.add(new JLabel("Payment Status:"), gbc);
-        gbc.gridx = 1;
-        JLabel paymentStatusLabel = new JLabel(booking.getPaymentStatus().getDisplayName());
-        paymentStatusLabel.setFont(new Font("Arial", Font.BOLD, 12));
-        
-        // Set color based on payment status
-        switch (booking.getPaymentStatus()) {
-            case COMPLETED:
-                paymentStatusLabel.setForeground(new Color(0, 128, 0));
-                break;
-            case FAILED:
-                paymentStatusLabel.setForeground(Color.RED);
-                break;
-            case PENDING:
-                paymentStatusLabel.setForeground(new Color(255, 140, 0));
-                break;
-        }
-        panel.add(paymentStatusLabel, gbc);
+        JLabel paymentStatusLabel = new JLabel("Payment Status");
+        paymentStatusLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        paymentStatusLabel.setForeground(DARK_BLUE);
+        contentPanel.add(paymentStatusLabel);
 
-        return panel;
+        JLabel paymentStatusBadge = new JLabel(booking.getPaymentStatus().getDisplayName());
+        paymentStatusBadge.setFont(new Font("Arial", Font.BOLD, 12));
+        paymentStatusBadge.setHorizontalAlignment(SwingConstants.CENTER);
+        paymentStatusBadge.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(getPaymentStatusColor(booking.getPaymentStatus().name()), 1),
+            new EmptyBorder(5, 10, 5, 10)
+        ));
+        paymentStatusBadge.setForeground(getPaymentStatusColor(booking.getPaymentStatus().name()));
+        paymentStatusBadge.setBackground(getPaymentStatusBackgroundColor(booking.getPaymentStatus().name()));
+        paymentStatusBadge.setOpaque(true);
+        contentPanel.add(paymentStatusBadge);
+
+        card.add(headerLabel, BorderLayout.NORTH);
+        card.add(contentPanel, BorderLayout.CENTER);
+
+        return card;
     }
+
+    private Color getStatusColor(String status) {
+        switch (status.toUpperCase()) {
+            case "CONFIRMED":
+                return SUCCESS_GREEN;
+            case "CANCELLED":
+                return DANGER_RED;
+            case "PENDING":
+                return WARNING_ORANGE;
+            default:
+                return LIGHT_GRAY;
+        }
+    }
+
+    private Color getStatusBackgroundColor(String status) {
+        switch (status.toUpperCase()) {
+            case "CONFIRMED":
+                return new Color(232, 245, 233);
+            case "CANCELLED":
+                return new Color(255, 235, 238);
+            case "PENDING":
+                return new Color(255, 248, 225);
+            default:
+                return new Color(245, 245, 245);
+        }
+    }
+
+    private Color getPaymentStatusColor(String status) {
+        switch (status.toUpperCase()) {
+            case "COMPLETED":
+                return SUCCESS_GREEN;
+            case "FAILED":
+                return DANGER_RED;
+            case "PENDING":
+                return WARNING_ORANGE;
+            default:
+                return LIGHT_GRAY;
+        }
+    }
+
+    private Color getPaymentStatusBackgroundColor(String status) {
+        switch (status.toUpperCase()) {
+            case "COMPLETED":
+                return new Color(232, 245, 233);
+            case "FAILED":
+                return new Color(255, 235, 238);
+            case "PENDING":
+                return new Color(255, 248, 225);
+            default:
+                return new Color(245, 245, 245);
+        }
+    }
+
+    private JPanel createButtonSection() {
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.setBackground(BACKGROUND_GRAY);
+        buttonPanel.setBorder(new EmptyBorder(20, 0, 0, 0));
+
+        buttonPanel.add(closeButton);
+
+        return buttonPanel;
+    }
+
+
 
     private void setupEventListeners() {
         closeButton.addActionListener(e -> dispose());
