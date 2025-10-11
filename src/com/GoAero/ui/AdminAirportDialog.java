@@ -48,18 +48,18 @@ public class AdminAirportDialog extends JDialog {
     }
 
     private void initializeComponents() {
-        setSize(550, 650);
+        setSize(750, 850);
         setLocationRelativeTo(getParent());
         setResizable(false);
 
-        // Create styled form fields with placeholders
-        codeField = createStyledTextFieldWithPlaceholder("Enter airport code (e.g., LAX)");
-        nameField = createStyledTextFieldWithPlaceholder("Enter airport name");
-        cityField = createStyledTextFieldWithPlaceholder("Enter city name");
-        countryField = createStyledTextFieldWithPlaceholder("Enter country name");
+        // Create enhanced styled form fields with improved placeholders
+        codeField = createStyledTextFieldWithPlaceholder("Enter IATA/ICAO code (e.g., LAX, KLAX)");
+        nameField = createStyledTextFieldWithPlaceholder("Enter full airport name (e.g., Los Angeles International)");
+        cityField = createStyledTextFieldWithPlaceholder("Enter city name (e.g., Los Angeles)");
+        countryField = createStyledTextFieldWithPlaceholder("Enter country name (e.g., United States)");
         
-        // Create modern styled buttons
-        String buttonText = isEditMode ? "🔄 Update Airport" : "➕ Create Airport";
+        // Create modern styled buttons with enhanced icons
+        String buttonText = isEditMode ? "� Update Airport" : "🛫 Create Airport";
         saveButton = createStyledButton(buttonText, PRIMARY_BLUE, Color.WHITE, 14);
         cancelButton = createStyledButton("❌ Cancel", LIGHT_GRAY, DARK_BLUE, 14);
     }
@@ -464,14 +464,14 @@ public class AdminAirportDialog extends JDialog {
         titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
         titlePanel.setBackground(BACKGROUND_GRAY);
 
-        JLabel titleLabel = new JLabel("🛫 " + (isEditMode ? "Edit Airport" : "Add New Airport"));
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 22));
+        JLabel titleLabel = new JLabel("🛫 " + (isEditMode ? "Edit Airport Information" : "Add New Airport Location"));
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
         titleLabel.setForeground(DARK_BLUE);
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel subtitleLabel = new JLabel(isEditMode ? 
             "Update airport information and location details" : 
-            "Register a new airport location in the system");
+            "Register a new airport location in the GoAero network");
         subtitleLabel.setFont(new Font("Arial", Font.PLAIN, 14));
         subtitleLabel.setForeground(new Color(100, 100, 100));
         subtitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -480,7 +480,24 @@ public class AdminAirportDialog extends JDialog {
         titlePanel.add(Box.createVerticalStrut(8));
         titlePanel.add(subtitleLabel);
 
+        // Admin badge
+        JPanel adminPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        adminPanel.setBackground(BACKGROUND_GRAY);
+        
+        JLabel adminBadge = new JLabel("👨‍💼 Airport Management");
+        adminBadge.setFont(new Font("Arial", Font.BOLD, 12));
+        adminBadge.setForeground(ACCENT_ORANGE);
+        adminBadge.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(ACCENT_ORANGE, 1),
+            new EmptyBorder(4, 8, 4, 8)
+        ));
+        adminBadge.setBackground(new Color(255, 248, 225));
+        adminBadge.setOpaque(true);
+        adminPanel.add(adminBadge);
+
         headerPanel.add(titlePanel, BorderLayout.CENTER);
+        headerPanel.add(adminPanel, BorderLayout.SOUTH);
+
         return headerPanel;
     }
 
@@ -499,52 +516,76 @@ public class AdminAirportDialog extends JDialog {
         gbc.insets = new Insets(15, 10, 15, 10);
         gbc.anchor = GridBagConstraints.WEST;
 
-        // Airport Code with enhanced styling
+        // Airport Information Section Header
         gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
+        JLabel sectionLabel = new JLabel("🛫 Airport Information");
+        sectionLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        sectionLabel.setForeground(DARK_BLUE);
+        sectionLabel.setBorder(new EmptyBorder(0, 0, 15, 0));
+        formPanel.add(sectionLabel, gbc);
+
+        // Airport Code with enhanced styling
+        gbc.gridy = 1; gbc.gridwidth = 1;
         JLabel codeLabel = new JLabel("Airport Code");
         codeLabel.setFont(new Font("Arial", Font.BOLD, 14));
         codeLabel.setForeground(DARK_BLUE);
         formPanel.add(codeLabel, gbc);
 
-        gbc.gridy = 1;
+        gbc.gridx = 1;
         JPanel codePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         codePanel.setBackground(CARD_WHITE);
         codePanel.add(codeField);
-        JLabel codeHint = new JLabel("  (3-4 letters, e.g., LAX, JFK)");
+        JLabel codeHint = new JLabel("  (3-4 letters, e.g., LAX, JFK, KLAX)");
         codeHint.setFont(new Font("Arial", Font.ITALIC, 12));
         codeHint.setForeground(new Color(120, 120, 120));
         codePanel.add(codeHint);
         formPanel.add(codePanel, gbc);
 
         // Airport Name
-        gbc.gridy = 2;
+        gbc.gridx = 0; gbc.gridy = 2;
         JLabel nameLabel = new JLabel("Airport Name");
         nameLabel.setFont(new Font("Arial", Font.BOLD, 14));
         nameLabel.setForeground(DARK_BLUE);
         formPanel.add(nameLabel, gbc);
 
-        gbc.gridy = 3;
+        gbc.gridx = 1;
         formPanel.add(nameField, gbc);
 
+        // Location Section Header
+        gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 2;
+        JLabel locationLabel = new JLabel("🌍 Location Details");
+        locationLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        locationLabel.setForeground(DARK_BLUE);
+        locationLabel.setBorder(new EmptyBorder(20, 0, 15, 0));
+        formPanel.add(locationLabel, gbc);
+
         // City
-        gbc.gridy = 4;
+        gbc.gridy = 4; gbc.gridwidth = 1;
         JLabel cityLabel = new JLabel("City");
         cityLabel.setFont(new Font("Arial", Font.BOLD, 14));
         cityLabel.setForeground(DARK_BLUE);
         formPanel.add(cityLabel, gbc);
 
-        gbc.gridy = 5;
+        gbc.gridx = 1;
         formPanel.add(cityField, gbc);
 
         // Country
-        gbc.gridy = 6;
+        gbc.gridx = 0; gbc.gridy = 5;
         JLabel countryLabel = new JLabel("Country");
         countryLabel.setFont(new Font("Arial", Font.BOLD, 14));
         countryLabel.setForeground(DARK_BLUE);
         formPanel.add(countryLabel, gbc);
 
-        gbc.gridy = 7;
+        gbc.gridx = 1;
         formPanel.add(countryField, gbc);
+
+        // Information note
+        gbc.gridx = 0; gbc.gridy = 6; gbc.gridwidth = 2;
+        JLabel infoNote = new JLabel("<html><i>💡 Ensure airport codes follow IATA (3-letter) or ICAO (4-letter) standards</i></html>");
+        infoNote.setFont(new Font("Arial", Font.ITALIC, 12));
+        infoNote.setForeground(new Color(120, 120, 120));
+        infoNote.setBorder(new EmptyBorder(20, 0, 0, 0));
+        formPanel.add(infoNote, gbc);
 
         contentPanel.add(formPanel, BorderLayout.CENTER);
         return contentPanel;
