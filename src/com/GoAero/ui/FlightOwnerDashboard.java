@@ -43,43 +43,73 @@ public class FlightOwnerDashboard extends JFrame {
     }
 
     private void initializeComponents() {
-        setTitle("GoAero - Airline Dashboard");
-        setSize(1400, 900);
+        setTitle("GoAero - " + currentFlightOwner.getCompanyName() + " Airline Portal");
+        setSize(1500, 950);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setResizable(false);
+        setResizable(true);
+        setMinimumSize(new Dimension(1200, 800));
 
-        // Modern welcome label
-        welcomeLabel = new JLabel("Welcome, " + currentFlightOwner.getCompanyName());
-        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        // Enhanced welcome label with airline branding
+        welcomeLabel = new JLabel("✈️ " + currentFlightOwner.getCompanyName());
+        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 28));
         welcomeLabel.setForeground(DARK_BLUE);
 
-        // Subtitle label with company code
-        subtitleLabel = new JLabel("Airline Code: " + currentFlightOwner.getCompanyCode() + " | Flight Management Portal");
+        // Enhanced subtitle with more context
+        subtitleLabel = new JLabel("Airline Code: " + currentFlightOwner.getCompanyCode() + 
+                                  " | Professional Flight Management Portal");
         subtitleLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         subtitleLabel.setForeground(new Color(100, 100, 100));
 
-        // Modern styled logout button
-        logoutButton = createStyledButton("🚪 Logout", DANGER_RED, Color.WHITE, 14);
-        logoutButton.setPreferredSize(new Dimension(120, 40));
+        // Enhanced logout button with better styling
+        logoutButton = createStyledButton("🚪 Secure Logout", DANGER_RED, Color.WHITE, 14);
+        logoutButton.setPreferredSize(new Dimension(140, 42));
+        logoutButton.setToolTipText("Securely logout from your airline portal");
 
-        // Modern styled tabbed pane
-        tabbedPane = new JTabbedPane();
-        tabbedPane.setFont(new Font("Arial", Font.BOLD, 14));
+        // Professional styled tabbed pane with enhanced design
+        tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+        tabbedPane.setFont(new Font("Arial", Font.BOLD, 15));
         tabbedPane.setBackground(CARD_WHITE);
         tabbedPane.setForeground(DARK_BLUE);
-        tabbedPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        tabbedPane.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(LIGHT_GRAY, 1),
+            BorderFactory.createEmptyBorder(15, 15, 15, 15)
+        ));
+        tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
-        // Add management panels with icons
-        tabbedPane.addTab("✈ My Flights", new OwnerFlightManagementPanel());
-        tabbedPane.addTab("📊 Booking Statistics", new OwnerBookingStatsPanel());
-        tabbedPane.addTab("🏢 Company Profile", new OwnerProfilePanel());
+        // Add enhanced management panels with better icons and descriptions
+        tabbedPane.addTab("✈️ Flight Operations", new OwnerFlightManagementPanel());
+        tabbedPane.setToolTipTextAt(0, "Manage your airline's flight schedules and operations");
+        
+        tabbedPane.addTab("📊 Analytics & Reports", new OwnerBookingStatsPanel());
+        tabbedPane.setToolTipTextAt(1, "View booking statistics and performance analytics");
+        
+        tabbedPane.addTab("🏢 Airline Profile", new OwnerProfilePanel());
+        tabbedPane.setToolTipTextAt(2, "Manage your company profile and settings");
 
-        // Style individual tabs
+        // Enhanced tab styling with better visual hierarchy
         for (int i = 0; i < tabbedPane.getTabCount(); i++) {
-            tabbedPane.setBackgroundAt(i, LIGHT_GRAY);
+            tabbedPane.setBackgroundAt(i, new Color(248, 250, 252));
             tabbedPane.setForegroundAt(i, DARK_BLUE);
         }
+
+        // Set selected tab appearance
+        tabbedPane.addChangeListener(e -> {
+            int selectedIndex = tabbedPane.getSelectedIndex();
+            for (int i = 0; i < tabbedPane.getTabCount(); i++) {
+                if (i == selectedIndex) {
+                    tabbedPane.setBackgroundAt(i, PRIMARY_BLUE);
+                    tabbedPane.setForegroundAt(i, Color.WHITE);
+                } else {
+                    tabbedPane.setBackgroundAt(i, new Color(248, 250, 252));
+                    tabbedPane.setForegroundAt(i, DARK_BLUE);
+                }
+            }
+        });
+
+        // Set initial selected tab styling
+        tabbedPane.setBackgroundAt(0, PRIMARY_BLUE);
+        tabbedPane.setForegroundAt(0, Color.WHITE);
     }
 
     private void setupLayout() {
@@ -112,24 +142,61 @@ public class FlightOwnerDashboard extends JFrame {
         headerPanel.setBackground(BACKGROUND_GRAY);
         headerPanel.setBorder(new EmptyBorder(0, 0, 25, 0));
 
-        // Title section
-        JPanel titlePanel = new JPanel();
-        titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
-        titlePanel.setBackground(BACKGROUND_GRAY);
+        // Enhanced title section with airline branding card
+        JPanel titleCard = new JPanel();
+        titleCard.setLayout(new BoxLayout(titleCard, BoxLayout.Y_AXIS));
+        titleCard.setBackground(CARD_WHITE);
+        titleCard.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(220, 220, 220), 1),
+            new EmptyBorder(20, 25, 20, 25)
+        ));
 
         welcomeLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         subtitleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        titlePanel.add(welcomeLabel);
-        titlePanel.add(Box.createVerticalStrut(8));
-        titlePanel.add(subtitleLabel);
+        // Add airline status indicator
+        JLabel statusLabel = new JLabel("🟢 Portal Active");
+        statusLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        statusLabel.setForeground(SUCCESS_GREEN);
+        statusLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // Logout button panel
-        JPanel logoutPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        titleCard.add(welcomeLabel);
+        titleCard.add(Box.createVerticalStrut(8));
+        titleCard.add(subtitleLabel);
+        titleCard.add(Box.createVerticalStrut(10));
+        titleCard.add(statusLabel);
+
+        // Enhanced logout panel with additional info
+        JPanel logoutPanel = new JPanel();
+        logoutPanel.setLayout(new BoxLayout(logoutPanel, BoxLayout.Y_AXIS));
         logoutPanel.setBackground(BACKGROUND_GRAY);
-        logoutPanel.add(logoutButton);
+        logoutPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
 
-        headerPanel.add(titlePanel, BorderLayout.WEST);
+        // Quick stats panel
+        JPanel quickStats = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 5));
+        quickStats.setBackground(CARD_WHITE);
+        quickStats.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(220, 220, 220), 1),
+            new EmptyBorder(10, 15, 10, 15)
+        ));
+
+        JLabel flightCount = new JLabel("✈️ " + (currentFlightOwner.getFlightCount() > 0 ? 
+                                              currentFlightOwner.getFlightCount() : "0") + " Flights");
+        flightCount.setFont(new Font("Arial", Font.BOLD, 13));
+        flightCount.setForeground(PRIMARY_BLUE);
+
+        JLabel activeStatus = new JLabel("📊 Dashboard");
+        activeStatus.setFont(new Font("Arial", Font.BOLD, 13));
+        activeStatus.setForeground(ACCENT_ORANGE);
+
+        quickStats.add(flightCount);
+        quickStats.add(new JSeparator(SwingConstants.VERTICAL));
+        quickStats.add(activeStatus);
+        quickStats.add(logoutButton);
+
+        logoutPanel.add(quickStats);
+
+        headerPanel.add(titleCard, BorderLayout.WEST);
         headerPanel.add(logoutPanel, BorderLayout.EAST);
 
         return headerPanel;
@@ -143,13 +210,24 @@ public class FlightOwnerDashboard extends JFrame {
             new EmptyBorder(20, 20, 20, 20)
         ));
 
-        // Content title
-        JLabel contentTitle = new JLabel("Airline Management");
+        // Enhanced content header with navigation breadcrumb
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setBackground(CARD_WHITE);
+        headerPanel.setBorder(new EmptyBorder(0, 0, 15, 0));
+
+        JLabel contentTitle = new JLabel("Airline Management Dashboard");
         contentTitle.setFont(new Font("Arial", Font.BOLD, 18));
         contentTitle.setForeground(DARK_BLUE);
-        contentTitle.setBorder(new EmptyBorder(0, 0, 15, 0));
 
-        contentPanel.add(contentTitle, BorderLayout.NORTH);
+        // Add breadcrumb navigation
+        JLabel breadcrumb = new JLabel("Home > Airline Portal > " + currentFlightOwner.getCompanyCode());
+        breadcrumb.setFont(new Font("Arial", Font.ITALIC, 12));
+        breadcrumb.setForeground(new Color(120, 120, 120));
+
+        headerPanel.add(contentTitle, BorderLayout.WEST);
+        headerPanel.add(breadcrumb, BorderLayout.EAST);
+
+        contentPanel.add(headerPanel, BorderLayout.NORTH);
         contentPanel.add(tabbedPane, BorderLayout.CENTER);
 
         return contentPanel;
@@ -157,15 +235,30 @@ public class FlightOwnerDashboard extends JFrame {
 
     private JPanel createFooterSection() {
         JPanel footerPanel = new JPanel();
-        footerPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        footerPanel.setLayout(new BorderLayout());
         footerPanel.setBackground(BACKGROUND_GRAY);
         footerPanel.setBorder(new EmptyBorder(20, 0, 0, 0));
+
+        // Enhanced footer with airline stats
+        JPanel footerContent = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
+        footerContent.setBackground(CARD_WHITE);
+        footerContent.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(220, 220, 220), 1),
+            new EmptyBorder(10, 20, 10, 20)
+        ));
 
         JLabel footerLabel = new JLabel("GoAero Flight Booking System - Airline Portal");
         footerLabel.setFont(new Font("Arial", Font.ITALIC, 12));
         footerLabel.setForeground(new Color(120, 120, 120));
 
-        footerPanel.add(footerLabel);
+        JLabel versionLabel = new JLabel("| Version 2.1 Professional");
+        versionLabel.setFont(new Font("Arial", Font.ITALIC, 11));
+        versionLabel.setForeground(new Color(150, 150, 150));
+
+        footerContent.add(footerLabel);
+        footerContent.add(versionLabel);
+
+        footerPanel.add(footerContent, BorderLayout.CENTER);
         return footerPanel;
     }
 
@@ -214,6 +307,8 @@ public class FlightOwnerDashboard extends JFrame {
     private Color createHoverColor(Color originalColor) {
         if (originalColor.equals(DANGER_RED)) {
             return new Color(255, 87, 87);
+        } else if (originalColor.equals(PRIMARY_BLUE)) {
+            return HOVER_BLUE;
         } else {
             // For other colors, create a lighter version
             int r = Math.min(255, originalColor.getRed() + 20);
