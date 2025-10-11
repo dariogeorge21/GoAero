@@ -224,22 +224,213 @@ public class FlightOwnerDashboard extends JFrame {
     }
 
     private void handleLogout() {
-        int choice = JOptionPane.showConfirmDialog(
-            this,
-            "Are you sure you want to logout?",
-            "Confirm Logout",
-            JOptionPane.YES_NO_OPTION
-        );
+        // Create a custom styled confirmation dialog
+        JDialog dialog = new JDialog(this, "Confirm Logout", true);
+        dialog.setUndecorated(true);
 
-        if (choice == JOptionPane.YES_OPTION) {
-            SessionManager.getInstance().logout();
-            JOptionPane.showMessageDialog(this, "You have been logged out successfully.", "Logout", JOptionPane.INFORMATION_MESSAGE);
-            
-            // Return to landing page
+        // Main content with rounded background and shadow
+        JPanel content = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                int arc = 16;
+                // shadow
+                g2.setColor(new Color(0, 0, 0, 30));
+                g2.fillRoundRect(4, 8, getWidth() - 8, getHeight() - 8, arc, arc);
+                // background
+                g2.setColor(Color.WHITE);
+                g2.fillRoundRect(0, 0, getWidth() - 8, getHeight() - 12, arc, arc);
+                g2.dispose();
+            }
+        };
+        content.setLayout(new BorderLayout());
+        content.setBorder(new EmptyBorder(20, 24, 18, 24));
+
+        // Header (icon + title)
+        JPanel header = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 10));
+        header.setOpaque(false);
+        JLabel logoutIcon = new JLabel("✈");
+        logoutIcon.setFont(new Font("Arial", Font.BOLD, 28));
+        logoutIcon.setForeground(ACCENT_ORANGE);
+        header.add(logoutIcon);
+        JLabel title = new JLabel("Confirm Logout");
+        title.setFont(new Font("Arial", Font.BOLD, 18));
+        title.setForeground(DARK_BLUE);
+        header.add(title);
+
+        content.add(header, BorderLayout.NORTH);
+
+        // Message section with airline-specific styling
+        JPanel messagePanel = new JPanel(new BorderLayout());
+        messagePanel.setOpaque(false);
+        messagePanel.setBorder(new EmptyBorder(10, 8, 20, 8));
+        
+        JLabel mainMessage = new JLabel("Are you sure you want to logout?");
+        mainMessage.setFont(new Font("Arial", Font.PLAIN, 15));
+        mainMessage.setForeground(new Color(60, 60, 60));
+        
+        JLabel subMessage = new JLabel("You will need to re-enter your airline credentials to access the portal again.");
+        subMessage.setFont(new Font("Arial", Font.ITALIC, 13));
+        subMessage.setForeground(new Color(120, 120, 120));
+        subMessage.setBorder(new EmptyBorder(8, 0, 0, 0));
+        
+        messagePanel.add(mainMessage, BorderLayout.NORTH);
+        messagePanel.add(subMessage, BorderLayout.CENTER);
+        content.add(messagePanel, BorderLayout.CENTER);
+
+        // Enhanced button panel
+        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 0));
+        btnPanel.setOpaque(false);
+        btnPanel.setBorder(new EmptyBorder(5, 0, 0, 0));
+        
+        JButton cancelBtn = createStyledButton("Stay Logged In", new Color(108, 117, 125), Color.WHITE, 14);
+        cancelBtn.setPreferredSize(new Dimension(130, 38));
+        cancelBtn.addActionListener(e -> dialog.dispose());
+        
+        JButton logoutBtn = createStyledButton("✈ Logout", DANGER_RED, Color.WHITE, 14);
+        logoutBtn.setPreferredSize(new Dimension(110, 38));
+        logoutBtn.addActionListener(e -> {
+            dialog.dispose();
+            performLogout();
+        });
+        
+        btnPanel.add(cancelBtn);
+        btnPanel.add(logoutBtn);
+        content.add(btnPanel, BorderLayout.SOUTH);
+
+        dialog.setContentPane(content);
+        dialog.pack();
+        dialog.setSize(Math.max(460, dialog.getWidth()), dialog.getHeight());
+        dialog.setLocationRelativeTo(this);
+
+        // Smooth fade-in animation
+        try {
+            dialog.setOpacity(0f);
+            Timer fadeTimer = new Timer(20, null);
+            final float[] alpha = {0f};
+            fadeTimer.addActionListener(ev -> {
+                alpha[0] += 0.08f;
+                if (alpha[0] >= 1f) {
+                    alpha[0] = 1f;
+                    fadeTimer.stop();
+                }
+                dialog.setOpacity(alpha[0]);
+            });
+            fadeTimer.start();
+        } catch (Throwable ignored) {
+            // setOpacity may not be supported on all platforms
+        }
+
+        dialog.setVisible(true);
+    }
+
+    private void performLogout() {
+        SessionManager.getInstance().logout();
+        
+        // Create a custom styled success dialog
+        JDialog successDialog = new JDialog(this, "Logout Successful", true);
+        successDialog.setUndecorated(true);
+
+        // Main content with rounded background and shadow
+        JPanel content = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                int arc = 16;
+                // shadow
+                g2.setColor(new Color(0, 0, 0, 20));
+                g2.fillRoundRect(4, 8, getWidth() - 8, getHeight() - 8, arc, arc);
+                // background with subtle gradient
+                GradientPaint gradient = new GradientPaint(0, 0, Color.WHITE, 0, getHeight(), new Color(248, 252, 255));
+                g2.setPaint(gradient);
+                g2.fillRoundRect(0, 0, getWidth() - 8, getHeight() - 12, arc, arc);
+                g2.dispose();
+            }
+        };
+        content.setLayout(new BorderLayout());
+        content.setBorder(new EmptyBorder(18, 20, 16, 20));
+
+        // Success header with airline theme
+        JPanel header = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 8));
+        header.setOpaque(false);
+        JLabel successIcon = new JLabel("✅");
+        successIcon.setFont(new Font("Arial", Font.BOLD, 22));
+        header.add(successIcon);
+        JLabel title = new JLabel("Logout Successful");
+        title.setFont(new Font("Arial", Font.BOLD, 16));
+        title.setForeground(DARK_BLUE);
+        header.add(title);
+
+        content.add(header, BorderLayout.NORTH);
+
+        // Message with airline context
+        JPanel messagePanel = new JPanel(new BorderLayout());
+        messagePanel.setOpaque(false);
+        messagePanel.setBorder(new EmptyBorder(8, 6, 12, 6));
+        
+        JLabel message = new JLabel("Your airline session has ended successfully.");
+        message.setFont(new Font("Arial", Font.PLAIN, 14));
+        
+        JLabel subMessage = new JLabel("Thank you for using GoAero's airline portal.");
+        subMessage.setFont(new Font("Arial", Font.ITALIC, 12));
+        subMessage.setForeground(new Color(100, 100, 100));
+        subMessage.setBorder(new EmptyBorder(5, 0, 0, 0));
+        
+        messagePanel.add(message, BorderLayout.NORTH);
+        messagePanel.add(subMessage, BorderLayout.CENTER);
+        content.add(messagePanel, BorderLayout.CENTER);
+
+        // Auto-close timer and manual button
+        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        btnPanel.setOpaque(false);
+        JButton okBtn = createStyledButton("Return to Login", SUCCESS_GREEN, Color.WHITE, 14);
+        okBtn.setPreferredSize(new Dimension(140, 36));
+        okBtn.addActionListener(e -> {
+            successDialog.dispose();
             SwingUtilities.invokeLater(() -> {
                 new LandingPage().setVisible(true);
                 dispose();
             });
+        });
+        btnPanel.add(okBtn);
+        content.add(btnPanel, BorderLayout.SOUTH);
+
+        successDialog.setContentPane(content);
+        successDialog.pack();
+        successDialog.setSize(Math.max(380, successDialog.getWidth()), successDialog.getHeight());
+        successDialog.setLocationRelativeTo(this);
+
+        // Auto-close timer (4 seconds for airline context)
+        Timer autoCloseTimer = new Timer(4000, e -> {
+            successDialog.dispose();
+            SwingUtilities.invokeLater(() -> {
+                new LandingPage().setVisible(true);
+                dispose();
+            });
+        });
+        autoCloseTimer.setRepeats(false);
+        autoCloseTimer.start();
+
+        // Fade-in effect
+        try {
+            successDialog.setOpacity(0f);
+            Timer fadeTimer = new Timer(20, null);
+            final float[] alpha = {0f};
+            fadeTimer.addActionListener(ev -> {
+                alpha[0] += 0.08f;
+                if (alpha[0] >= 1f) {
+                    alpha[0] = 1f;
+                    fadeTimer.stop();
+                }
+                successDialog.setOpacity(alpha[0]);
+            });
+            fadeTimer.start();
+        } catch (Throwable ignored) {
+            // setOpacity may not be supported on all platforms
         }
+
+        successDialog.setVisible(true);
     }
 }
