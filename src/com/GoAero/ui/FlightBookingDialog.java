@@ -9,15 +9,25 @@ import com.GoAero.model.User;
 import com.GoAero.util.PNRGenerator;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Dialog for booking a selected flight
+ * Dialog for booking a selected flight with modern UI design
  */
 public class FlightBookingDialog extends JDialog {
+    // Professional color scheme (consistent with other pages)
+    private static final Color PRIMARY_BLUE = new Color(25, 118, 210);
+    private static final Color ACCENT_ORANGE = new Color(255, 152, 0);
+    private static final Color DARK_BLUE = new Color(13, 71, 161);
+    private static final Color LIGHT_GRAY = new Color(245, 245, 245);
+    private static final Color HOVER_BLUE = new Color(30, 136, 229);
+    private static final Color SUCCESS_GREEN = new Color(76, 175, 80);
+    private static final Color BACKGROUND_GRAY = new Color(250, 250, 250);
+    private static final Color CARD_WHITE = Color.WHITE;
     private Flight selectedFlight;
     private User currentUser;
     private BookingDAO bookingDAO;
@@ -39,19 +49,22 @@ public class FlightBookingDialog extends JDialog {
     }
 
     private void initializeComponents() {
-        setSize(500, 400);
+        setSize(600, 550);
         setLocationRelativeTo(getParent());
         setResizable(false);
 
-        // Flight information
+        // Flight information with modern styling
         String flightInfo = String.format(
-            "<html><h3>Flight Details</h3>" +
+            "<html><div style='font-family: Arial; padding: 10px;'>" +
+            "<h3 style='color: #0D47A1; margin-bottom: 15px;'>✈ Flight Details</h3>" +
+            "<div style='line-height: 1.6;'>" +
             "<b>Flight:</b> %s (%s)<br>" +
             "<b>Airline:</b> %s<br>" +
             "<b>Route:</b> %s<br>" +
             "<b>Departure:</b> %s<br>" +
             "<b>Arrival:</b> %s<br>" +
-            "<b>Available Seats:</b> %d</html>",
+            "<b>Available Seats:</b> %d" +
+            "</div></div></html>",
             selectedFlight.getFlightCode(),
             selectedFlight.getFlightName(),
             selectedFlight.getCompanyName(),
@@ -61,78 +74,149 @@ public class FlightBookingDialog extends JDialog {
             selectedFlight.getAvailableSeats()
         );
         flightInfoLabel = new JLabel(flightInfo);
+        flightInfoLabel.setVerticalAlignment(SwingConstants.TOP);
 
-        // Price information
-        priceLabel = new JLabel(String.format("<html><h3>Total Price: $%.2f</h3></html>", selectedFlight.getPrice()));
-        priceLabel.setForeground(new Color(0, 128, 0));
+        // Price information with modern styling
+        priceLabel = new JLabel(String.format(
+            "<html><div style='text-align: center; font-family: Arial;'>" +
+            "<h2 style='color: #4CAF50; margin: 10px 0;'>💰 Total Price: $%.2f</h2>" +
+            "</div></html>",
+            selectedFlight.getPrice()
+        ));
+        priceLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        // Passenger information
+        // Passenger information with modern styling
         String passengerInfo = String.format(
-            "<html><h3>Passenger Information</h3>" +
+            "<html><div style='font-family: Arial; padding: 10px;'>" +
+            "<h3 style='color: #0D47A1; margin-bottom: 15px;'>👤 Passenger Information</h3>" +
+            "<div style='line-height: 1.6;'>" +
             "<b>Name:</b> %s<br>" +
             "<b>Email:</b> %s<br>" +
-            "<b>Phone:</b> %s</html>",
+            "<b>Phone:</b> %s" +
+            "</div></div></html>",
             currentUser.getFullName(),
             currentUser.getEmail(),
             currentUser.getPhone() != null ? currentUser.getPhone() : "Not provided"
         );
         passengerInfoLabel = new JLabel(passengerInfo);
+        passengerInfoLabel.setVerticalAlignment(SwingConstants.TOP);
 
-        confirmBookingButton = new JButton("Confirm Booking");
-        confirmBookingButton.setFont(new Font("Arial", Font.BOLD, 14));
-        confirmBookingButton.setBackground(new Color(0, 128, 0));
-        confirmBookingButton.setForeground(Color.WHITE);
+        // Modern styled buttons
+        confirmBookingButton = createStyledButton("✅ Confirm Booking", SUCCESS_GREEN, Color.WHITE, 16);
+        confirmBookingButton.setPreferredSize(new Dimension(180, 45));
 
-        cancelButton = new JButton("Cancel");
+        cancelButton = createStyledButton("❌ Cancel", new Color(108, 117, 125), Color.WHITE, 14);
+        cancelButton.setPreferredSize(new Dimension(120, 45));
     }
 
     private void setupLayout() {
         setLayout(new BorderLayout());
+        getContentPane().setBackground(BACKGROUND_GRAY);
 
         // Main content panel
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBackground(BACKGROUND_GRAY);
+        mainPanel.setBorder(new EmptyBorder(25, 30, 25, 30));
+
+        // Header section
+        JPanel headerSection = createHeaderSection();
+        mainPanel.add(headerSection, BorderLayout.NORTH);
+
+        // Content section
+        JPanel contentSection = createContentSection();
+        mainPanel.add(contentSection, BorderLayout.CENTER);
+
+        // Button section
+        JPanel buttonSection = createButtonSection();
+        mainPanel.add(buttonSection, BorderLayout.SOUTH);
+
+        add(mainPanel, BorderLayout.CENTER);
+    }
+
+    private JPanel createHeaderSection() {
+        JPanel headerPanel = new JPanel();
+        headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
+        headerPanel.setBackground(BACKGROUND_GRAY);
+        headerPanel.setBorder(new EmptyBorder(0, 0, 20, 0));
+
+        // Title
+        JLabel titleLabel = new JLabel("Flight Booking");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 28));
+        titleLabel.setForeground(DARK_BLUE);
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Subtitle
+        JLabel subtitleLabel = new JLabel("Review your booking details");
+        subtitleLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        subtitleLabel.setForeground(new Color(100, 100, 100));
+        subtitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        headerPanel.add(titleLabel);
+        headerPanel.add(Box.createVerticalStrut(8));
+        headerPanel.add(subtitleLabel);
+
+        return headerPanel;
+    }
+
+    private JPanel createContentSection() {
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-        contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        contentPanel.setBackground(CARD_WHITE);
+        contentPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(LIGHT_GRAY, 1),
+            new EmptyBorder(20, 25, 20, 25)
+        ));
 
-        // Flight info panel
-        JPanel flightPanel = new JPanel(new BorderLayout());
-        flightPanel.setBorder(BorderFactory.createEtchedBorder());
-        flightPanel.add(flightInfoLabel, BorderLayout.CENTER);
-        contentPanel.add(flightPanel);
-
-        contentPanel.add(Box.createVerticalStrut(15));
+        // Flight info card
+        JPanel flightCard = createInfoCard(flightInfoLabel);
+        contentPanel.add(flightCard);
+        contentPanel.add(Box.createVerticalStrut(20));
 
         // Price panel
         JPanel pricePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        pricePanel.setBackground(CARD_WHITE);
         pricePanel.add(priceLabel);
         contentPanel.add(pricePanel);
+        contentPanel.add(Box.createVerticalStrut(20));
 
-        contentPanel.add(Box.createVerticalStrut(15));
-
-        // Passenger info panel
-        JPanel passengerPanel = new JPanel(new BorderLayout());
-        passengerPanel.setBorder(BorderFactory.createEtchedBorder());
-        passengerPanel.add(passengerInfoLabel, BorderLayout.CENTER);
-        contentPanel.add(passengerPanel);
-
-        contentPanel.add(Box.createVerticalStrut(15));
+        // Passenger info card
+        JPanel passengerCard = createInfoCard(passengerInfoLabel);
+        contentPanel.add(passengerCard);
+        contentPanel.add(Box.createVerticalStrut(20));
 
         // Terms and conditions
         JLabel termsLabel = new JLabel(
-            "<html><small><i>By confirming this booking, you agree to the terms and conditions.<br>" +
-            "Your booking will be confirmed and a PNR will be generated.</i></small></html>"
+            "<html><div style='text-align: center; font-family: Arial; color: #666;'>" +
+            "<small><i>📋 By confirming this booking, you agree to the terms and conditions.<br>" +
+            "Your booking will be confirmed and a PNR will be generated.</i></small>" +
+            "</div></html>"
         );
-        termsLabel.setForeground(Color.GRAY);
         termsLabel.setHorizontalAlignment(SwingConstants.CENTER);
         contentPanel.add(termsLabel);
 
-        add(contentPanel, BorderLayout.CENTER);
+        return contentPanel;
+    }
 
-        // Button panel
-        JPanel buttonPanel = new JPanel(new FlowLayout());
-        buttonPanel.add(confirmBookingButton);
+    private JPanel createInfoCard(JLabel infoLabel) {
+        JPanel card = new JPanel(new BorderLayout());
+        card.setBackground(new Color(248, 249, 250));
+        card.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(LIGHT_GRAY, 1),
+            new EmptyBorder(15, 20, 15, 20)
+        ));
+        card.add(infoLabel, BorderLayout.CENTER);
+        return card;
+    }
+
+    private JPanel createButtonSection() {
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 0));
+        buttonPanel.setBackground(BACKGROUND_GRAY);
+        buttonPanel.setBorder(new EmptyBorder(20, 0, 0, 0));
+
         buttonPanel.add(cancelButton);
-        add(buttonPanel, BorderLayout.SOUTH);
+        buttonPanel.add(confirmBookingButton);
+
+        return buttonPanel;
     }
 
     private void setupEventListeners() {
@@ -217,5 +301,55 @@ public class FlightBookingDialog extends JDialog {
 
     private void showError(String message) {
         JOptionPane.showMessageDialog(this, message, "Booking Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    /**
+     * Creates a styled button with hover effects and modern design
+     */
+    private JButton createStyledButton(String text, Color bgColor, Color textColor, int fontSize) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("Arial", Font.BOLD, fontSize));
+        button.setBackground(bgColor);
+        button.setForeground(textColor);
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        button.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createRaisedBevelBorder(),
+            BorderFactory.createEmptyBorder(8, 15, 8, 15)
+        ));
+
+        // Add hover effects
+        Color originalBg = bgColor;
+        Color hoverColor = createHoverColor(bgColor);
+
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                button.setBackground(hoverColor);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                button.setBackground(originalBg);
+            }
+        });
+
+        return button;
+    }
+
+    /**
+     * Creates a hover color that's slightly lighter than the original
+     */
+    private Color createHoverColor(Color originalColor) {
+        if (originalColor.equals(SUCCESS_GREEN)) {
+            return new Color(102, 187, 106);
+        } else {
+            // For other colors, create a lighter version
+            int r = Math.min(255, originalColor.getRed() + 20);
+            int g = Math.min(255, originalColor.getGreen() + 20);
+            int b = Math.min(255, originalColor.getBlue() + 20);
+            return new Color(r, g, b);
+        }
     }
 }
