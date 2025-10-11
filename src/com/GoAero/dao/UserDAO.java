@@ -14,22 +14,22 @@ import java.util.List;
 public class UserDAO implements BaseDAO<User, Integer> {
 
     private static final String INSERT_USER = 
-        "INSERT INTO users (first_name, last_name, email, phone, DOB, password_hash) VALUES (?, ?, ?, ?, ?, ?)";
+        "INSERT INTO users (first_name, last_name, email, phone, DOB, password) VALUES (?, ?, ?, ?, ?, ?)";
     
     private static final String SELECT_USER_BY_ID = 
-        "SELECT user_id, first_name, last_name, email, phone, DOB, password_hash, created_at, updated_at FROM users WHERE user_id = ?";
+        "SELECT user_id, first_name, last_name, email, phone, DOB, password, created_at, updated_at FROM users WHERE user_id = ?";
     
     private static final String SELECT_ALL_USERS = 
-        "SELECT user_id, first_name, last_name, email, phone, DOB, password_hash, created_at, updated_at FROM users ORDER BY created_at DESC";
+        "SELECT user_id, first_name, last_name, email, phone, DOB, password, created_at, updated_at FROM users ORDER BY created_at DESC";
     
     private static final String UPDATE_USER = 
-        "UPDATE users SET first_name = ?, last_name = ?, email = ?, phone = ?, DOB = ?, password_hash = ? WHERE user_id = ?";
+        "UPDATE users SET first_name = ?, last_name = ?, email = ?, phone = ?, DOB = ?, password = ? WHERE user_id = ?";
     
     private static final String DELETE_USER = 
         "DELETE FROM users WHERE user_id = ?";
     
     private static final String SELECT_USER_BY_EMAIL = 
-        "SELECT user_id, first_name, last_name, email, phone, DOB, password_hash, created_at, updated_at FROM users WHERE email = ?";
+        "SELECT user_id, first_name, last_name, email, phone, DOB, password, created_at, updated_at FROM users WHERE email = ?";
     
     private static final String COUNT_USERS = 
         "SELECT COUNT(*) FROM users";
@@ -228,7 +228,7 @@ public class UserDAO implements BaseDAO<User, Integer> {
             user.setDateOfBirth(dobDate.toLocalDate());
         }
         
-        user.setPasswordHash(rs.getString("password_hash"));
+        user.setPasswordHash(rs.getString("password"));
         user.setCreatedAt(rs.getTimestamp("created_at"));
         user.setUpdatedAt(rs.getTimestamp("updated_at"));
         
