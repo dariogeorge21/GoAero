@@ -39,7 +39,7 @@ public class FlightOwnerRegistrationDialog extends JDialog {
     }
 
     private void initializeComponents() {
-        setSize(600, 650);
+        setSize(800, 750);
         setLocationRelativeTo(getParent());
         setResizable(false);
 
@@ -62,7 +62,7 @@ public class FlightOwnerRegistrationDialog extends JDialog {
         // Main content panel with padding
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(BACKGROUND_GRAY);
-        mainPanel.setBorder(new EmptyBorder(25, 30, 25, 30));
+        mainPanel.setBorder(new EmptyBorder(25, 30, 30, 30));
 
         // Header section
         JPanel headerSection = createHeaderSection();
@@ -197,11 +197,194 @@ public class FlightOwnerRegistrationDialog extends JDialog {
     }
 
     private void showError(String message) {
-        JOptionPane.showMessageDialog(this, message, "Validation Error", JOptionPane.ERROR_MESSAGE);
+        // Create a custom styled error dialog for airline registration
+        JDialog dialog = new JDialog(this, "Registration Error", true);
+        dialog.setUndecorated(true);
+
+        // Main content with rounded background and shadow
+        JPanel content = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                int arc = 16;
+                // shadow
+                g2.setColor(new Color(0, 0, 0, 25));
+                g2.fillRoundRect(4, 8, getWidth() - 8, getHeight() - 8, arc, arc);
+                // background
+                g2.setColor(Color.WHITE);
+                g2.fillRoundRect(0, 0, getWidth() - 8, getHeight() - 12, arc, arc);
+                g2.dispose();
+            }
+        };
+        content.setLayout(new BorderLayout());
+        content.setBorder(new EmptyBorder(16, 18, 14, 18));
+
+        // Header (icon + title) with airline theme
+        JPanel header = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 8));
+        header.setOpaque(false);
+        JLabel errorIcon = new JLabel("⚠");
+        errorIcon.setFont(new Font("Arial", Font.BOLD, 24));
+        errorIcon.setForeground(new Color(244, 67, 54));
+        header.add(errorIcon);
+        JLabel title = new JLabel("Registration Issue");
+        title.setFont(new Font("Arial", Font.BOLD, 16));
+        title.setForeground(DARK_BLUE);
+        header.add(title);
+
+        content.add(header, BorderLayout.NORTH);
+
+        // Message area
+        JTextArea msgArea = new JTextArea(message);
+        msgArea.setFont(new Font("Arial", Font.PLAIN, 14));
+        msgArea.setEditable(false);
+        msgArea.setOpaque(false);
+        msgArea.setLineWrap(true);
+        msgArea.setWrapStyleWord(true);
+        msgArea.setBorder(new EmptyBorder(8, 6, 12, 6));
+        content.add(msgArea, BorderLayout.CENTER);
+
+        // Button panel
+        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        btnPanel.setOpaque(false);
+        JButton ok = createStyledButton("Understood", new Color(244, 67, 54), Color.WHITE);
+        ok.setPreferredSize(new Dimension(110, 36));
+        ok.addActionListener(e -> dialog.dispose());
+        btnPanel.add(ok);
+        content.add(btnPanel, BorderLayout.SOUTH);
+
+        dialog.setContentPane(content);
+        dialog.pack();
+        dialog.setSize(Math.max(400, dialog.getWidth()), dialog.getHeight());
+        dialog.setLocationRelativeTo(this);
+
+        // Fade-in effect
+        try {
+            dialog.setOpacity(0f);
+            Timer fadeTimer = new Timer(25, null);
+            final float[] alpha = {0f};
+            fadeTimer.addActionListener(ev -> {
+                alpha[0] += 0.1f;
+                if (alpha[0] >= 1f) {
+                    alpha[0] = 1f;
+                    fadeTimer.stop();
+                }
+                dialog.setOpacity(alpha[0]);
+            });
+            fadeTimer.start();
+        } catch (Throwable ignored) {
+            // setOpacity may not be supported on all platforms
+        }
+
+        dialog.setVisible(true);
     }
 
     private void showSuccess(String message) {
-        JOptionPane.showMessageDialog(this, message, "Success", JOptionPane.INFORMATION_MESSAGE);
+        // Create a custom styled success dialog for airline registration
+        JDialog dialog = new JDialog(this, "Registration Complete", true);
+        dialog.setUndecorated(true);
+
+        // Main content with rounded background and gradient
+        JPanel content = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                int arc = 16;
+                // shadow
+                g2.setColor(new Color(0, 0, 0, 20));
+                g2.fillRoundRect(4, 8, getWidth() - 8, getHeight() - 8, arc, arc);
+                // background with corporate gradient
+                GradientPaint gradient = new GradientPaint(0, 0, Color.WHITE, 0, getHeight(), new Color(248, 255, 248));
+                g2.setPaint(gradient);
+                g2.fillRoundRect(0, 0, getWidth() - 8, getHeight() - 12, arc, arc);
+                g2.dispose();
+            }
+        };
+        content.setLayout(new BorderLayout());
+        content.setBorder(new EmptyBorder(20, 22, 18, 22));
+
+        // Success header with airline celebration
+        JPanel header = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 10));
+        header.setOpaque(false);
+        JLabel successIcon = new JLabel("🎉");
+        successIcon.setFont(new Font("Arial", Font.BOLD, 26));
+        header.add(successIcon);
+        JLabel title = new JLabel("Welcome to GoAero!");
+        title.setFont(new Font("Arial", Font.BOLD, 18));
+        title.setForeground(DARK_BLUE);
+        header.add(title);
+
+        content.add(header, BorderLayout.NORTH);
+
+        // Message with airline-specific content
+        JPanel messagePanel = new JPanel(new BorderLayout());
+        messagePanel.setOpaque(false);
+        messagePanel.setBorder(new EmptyBorder(10, 8, 15, 8));
+        
+        JLabel mainMessage = new JLabel("Your airline has been successfully registered!");
+        mainMessage.setFont(new Font("Arial", Font.PLAIN, 15));
+        
+        JLabel subMessage = new JLabel("You can now login and start managing your flights on GoAero.");
+        subMessage.setFont(new Font("Arial", Font.ITALIC, 13));
+        subMessage.setForeground(new Color(100, 100, 100));
+        subMessage.setBorder(new EmptyBorder(8, 0, 0, 0));
+        
+        JLabel actionMessage = new JLabel("✈️ Ready to add your first flight?");
+        actionMessage.setFont(new Font("Arial", Font.BOLD, 12));
+        actionMessage.setForeground(ACCENT_ORANGE);
+        actionMessage.setBorder(new EmptyBorder(10, 0, 0, 0));
+        
+        messagePanel.add(mainMessage, BorderLayout.NORTH);
+        messagePanel.add(subMessage, BorderLayout.CENTER);
+        messagePanel.add(actionMessage, BorderLayout.SOUTH);
+        content.add(messagePanel, BorderLayout.CENTER);
+
+        // Enhanced button panel with airline actions
+        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 12, 0));
+        btnPanel.setOpaque(false);
+        btnPanel.setBorder(new EmptyBorder(5, 0, 0, 0));
+        
+        JButton loginBtn = createStyledButton("🏢 Go to Dashboard", PRIMARY_BLUE, Color.WHITE);
+        loginBtn.setPreferredSize(new Dimension(150, 38));
+        loginBtn.addActionListener(e -> {
+            dialog.dispose();
+            // Close registration dialog and navigate to login
+            dispose();
+        });
+        
+        JButton okBtn = createStyledButton("Perfect!", SUCCESS_GREEN, Color.WHITE);
+        okBtn.setPreferredSize(new Dimension(100, 38));
+        okBtn.addActionListener(e -> dialog.dispose());
+        
+        btnPanel.add(loginBtn);
+        btnPanel.add(okBtn);
+        content.add(btnPanel, BorderLayout.SOUTH);
+
+        dialog.setContentPane(content);
+        dialog.pack();
+        dialog.setSize(Math.max(480, dialog.getWidth()), dialog.getHeight());
+        dialog.setLocationRelativeTo(this);
+
+        // Smooth celebration animation
+        try {
+            dialog.setOpacity(0f);
+            Timer fadeTimer = new Timer(15, null);
+            final float[] alpha = {0f};
+            fadeTimer.addActionListener(ev -> {
+                alpha[0] += 0.06f;
+                if (alpha[0] >= 1f) {
+                    alpha[0] = 1f;
+                    fadeTimer.stop();
+                }
+                dialog.setOpacity(alpha[0]);
+            });
+            fadeTimer.start();
+        } catch (Throwable ignored) {
+            // setOpacity may not be supported on all platforms
+        }
+
+        dialog.setVisible(true);
     }
 
     private JTextField createStyledTextFieldWithPlaceholder(String placeholder) {

@@ -311,7 +311,7 @@ public class UserDashboard extends JFrame {
         btnPanel.setOpaque(false);
         btnPanel.setBorder(new EmptyBorder(5, 0, 0, 0));
         
-        JButton stayBtn = createStyledButton("Stay & Explore", PRIMARY_BLUE, Color.WHITE, 14);
+        JButton stayBtn = createStyledButton("Stay", PRIMARY_BLUE, Color.WHITE, 14);
         stayBtn.setPreferredSize(new Dimension(130, 38));
         stayBtn.addActionListener(e -> dialog.dispose());
         
