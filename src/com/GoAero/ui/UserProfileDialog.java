@@ -50,7 +50,7 @@ public class UserProfileDialog extends JDialog {
     }
 
     private void initializeComponents() {
-        setSize(500, 600);
+        setSize(800, 700);
         setLocationRelativeTo(getParent());
         setResizable(false);
 
