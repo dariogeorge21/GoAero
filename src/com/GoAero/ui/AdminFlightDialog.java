@@ -66,27 +66,27 @@ public class AdminFlightDialog extends JDialog {
     }
 
     private void initializeComponents() {
-        setSize(700, 750);
+        setSize(750, 800);
         setLocationRelativeTo(getParent());
         setResizable(false);
 
-        // Create styled form fields with placeholders
-        flightCodeField = createStyledTextField("Enter flight code (e.g., GA123)");
-        flightNameField = createStyledTextField("Enter descriptive flight name or route");
-        capacityField = createStyledTextField("Enter passenger capacity");
-        priceField = createStyledTextField("Enter ticket price in USD");
-        departureTimeField = createStyledTextField("YYYY-MM-DD HH:MM");
-        destinationTimeField = createStyledTextField("YYYY-MM-DD HH:MM");
+        // Create enhanced styled form fields with improved placeholders
+        flightCodeField = createStyledTextField("Enter flight code (e.g., GA123, AA1234)");
+        flightNameField = createStyledTextField("Enter descriptive flight name or route description");
+        capacityField = createStyledTextField("Enter passenger capacity (e.g., 180, 350)");
+        priceField = createStyledTextField("Enter ticket price in USD (e.g., 299.99)");
+        departureTimeField = createStyledTextField("YYYY-MM-DD HH:MM (e.g., 2024-03-15 14:30)");
+        destinationTimeField = createStyledTextField("YYYY-MM-DD HH:MM (e.g., 2024-03-15 18:45)");
         
-        // Create styled combo boxes
+        // Create enhanced styled combo boxes with better rendering
         companyComboBox = createStyledComboBox();
         departureAirportComboBox = createStyledComboBox();
         destinationAirportComboBox = createStyledComboBox();
         
-        // Create modern styled buttons
-        String buttonText = isEditMode ? "✈ Update Flight" : "✈ Create Flight";
+        // Create modern styled buttons with enhanced design
+        String buttonText = isEditMode ? "✈ Update Flight Schedule" : "✈ Create New Flight";
         saveButton = createStyledButton(buttonText, PRIMARY_BLUE, Color.WHITE, 14);
-        cancelButton = createStyledButton("❌ Cancel", LIGHT_GRAY, DARK_BLUE, 14);
+        cancelButton = createStyledButton("❌ Cancel Operation", LIGHT_GRAY, DARK_BLUE, 14);
     }
 
     private void setupLayout() {
@@ -142,9 +142,71 @@ public class AdminFlightDialog extends JDialog {
                 departureAirportComboBox.addItem(airport);
                 destinationAirportComboBox.addItem(airport);
             }
+            
+            // Setup custom renderers for better display
+            setupComboBoxRenderers();
         } catch (Exception e) {
             showError("Failed to load data: " + e.getMessage());
         }
+    }
+    
+    /**
+     * Sets up custom renderers for combo boxes to display more informative text
+     */
+    private void setupComboBoxRenderers() {
+        // Flight Owner ComboBox Renderer
+        companyComboBox.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index,
+                    boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                
+                if (value instanceof FlightOwner) {
+                    FlightOwner owner = (FlightOwner) value;
+                    setText("🏢 " + owner.getCompanyName() + " (" + owner.getCompanyCode() + ")");
+                    setFont(new Font("Arial", Font.PLAIN, 13));
+                }
+                
+                if (isSelected) {
+                    setBackground(PRIMARY_BLUE);
+                    setForeground(Color.WHITE);
+                } else {
+                    setBackground(Color.WHITE);
+                    setForeground(Color.BLACK);
+                }
+                
+                return this;
+            }
+        });
+        
+        // Airport ComboBox Renderer
+        DefaultListCellRenderer airportRenderer = new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index,
+                    boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                
+                if (value instanceof Airport) {
+                    Airport airport = (Airport) value;
+                    setText("🛫 " + airport.getAirportCode() + " - " + airport.getAirportName() + 
+                           " (" + airport.getCity() + ", " + airport.getCountry() + ")");
+                    setFont(new Font("Arial", Font.PLAIN, 13));
+                }
+                
+                if (isSelected) {
+                    setBackground(PRIMARY_BLUE);
+                    setForeground(Color.WHITE);
+                } else {
+                    setBackground(Color.WHITE);
+                    setForeground(Color.BLACK);
+                }
+                
+                return this;
+            }
+        };
+        
+        departureAirportComboBox.setRenderer(airportRenderer);
+        destinationAirportComboBox.setRenderer(airportRenderer);
     }
 
     private void loadFlightData() {
@@ -534,22 +596,22 @@ public class AdminFlightDialog extends JDialog {
     }
 
     /**
-     * Creates a styled text field with placeholder support
+     * Creates a styled text field with placeholder support and enhanced design
      */
     private JTextField createStyledTextField(String placeholder) {
         JTextField field = new JTextField(25);
         field.setFont(new Font("Arial", Font.PLAIN, 14));
-        field.setPreferredSize(new Dimension(320, 40));
+        field.setPreferredSize(new Dimension(350, 42));
         field.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(LIGHT_GRAY, 2),
-            BorderFactory.createEmptyBorder(8, 12, 8, 12)
+            BorderFactory.createEmptyBorder(10, 15, 10, 15)
         ));
         
         // Set placeholder text
         field.setText(placeholder);
-        field.setForeground(Color.GRAY);
+        field.setForeground(new Color(140, 140, 140));
         
-        // Add focus effects
+        // Add focus effects with smooth transitions
         field.addFocusListener(new java.awt.event.FocusAdapter() {
             @Override
             public void focusGained(java.awt.event.FocusEvent e) {
@@ -559,20 +621,23 @@ public class AdminFlightDialog extends JDialog {
                 }
                 field.setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(PRIMARY_BLUE, 2),
-                    BorderFactory.createEmptyBorder(8, 12, 8, 12)
+                    BorderFactory.createEmptyBorder(10, 15, 10, 15)
                 ));
+                // Add subtle background highlight on focus
+                field.setBackground(new Color(248, 250, 255));
             }
             
             @Override
             public void focusLost(java.awt.event.FocusEvent e) {
                 if (field.getText().trim().isEmpty()) {
                     field.setText(placeholder);
-                    field.setForeground(Color.GRAY);
+                    field.setForeground(new Color(140, 140, 140));
                 }
                 field.setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(LIGHT_GRAY, 2),
-                    BorderFactory.createEmptyBorder(8, 12, 8, 12)
+                    BorderFactory.createEmptyBorder(10, 15, 10, 15)
                 ));
+                field.setBackground(Color.WHITE);
             }
         });
         
@@ -585,12 +650,31 @@ public class AdminFlightDialog extends JDialog {
     private <T> JComboBox<T> createStyledComboBox() {
         JComboBox<T> comboBox = new JComboBox<>();
         comboBox.setFont(new Font("Arial", Font.PLAIN, 14));
-        comboBox.setPreferredSize(new Dimension(320, 40));
+        comboBox.setPreferredSize(new Dimension(350, 42));
         comboBox.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(LIGHT_GRAY, 2),
-            BorderFactory.createEmptyBorder(2, 8, 2, 2)
+            BorderFactory.createEmptyBorder(4, 12, 4, 4)
         ));
         comboBox.setBackground(Color.WHITE);
+        
+        // Add focus listener for visual feedback
+        comboBox.addFocusListener(new java.awt.event.FocusAdapter() {
+            @Override
+            public void focusGained(java.awt.event.FocusEvent e) {
+                comboBox.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(PRIMARY_BLUE, 2),
+                    BorderFactory.createEmptyBorder(4, 12, 4, 4)
+                ));
+            }
+            
+            @Override
+            public void focusLost(java.awt.event.FocusEvent e) {
+                comboBox.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(LIGHT_GRAY, 2),
+                    BorderFactory.createEmptyBorder(4, 12, 4, 4)
+                ));
+            }
+        });
         
         return comboBox;
     }
@@ -599,41 +683,42 @@ public class AdminFlightDialog extends JDialog {
         JPanel headerPanel = new JPanel();
         headerPanel.setLayout(new BorderLayout());
         headerPanel.setBackground(BACKGROUND_GRAY);
-        headerPanel.setBorder(new EmptyBorder(0, 0, 25, 0));
+        headerPanel.setBorder(new EmptyBorder(0, 0, 30, 0));
 
-        // Title section with flight icon
+        // Title section with enhanced flight icon
         JPanel titlePanel = new JPanel();
         titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
         titlePanel.setBackground(BACKGROUND_GRAY);
 
         JLabel titleLabel = new JLabel("✈ " + (isEditMode ? "Edit Flight Schedule" : "Create New Flight"));
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 22));
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 26));
         titleLabel.setForeground(DARK_BLUE);
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel subtitleLabel = new JLabel(isEditMode ? 
-            "Update flight information and schedule details" : 
-            "Add a new flight to the network schedule");
-        subtitleLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+            "Update flight information, schedule details, and network connectivity" : 
+            "Add a new flight to the global aviation network with comprehensive details");
+        subtitleLabel.setFont(new Font("Arial", Font.PLAIN, 15));
         subtitleLabel.setForeground(new Color(100, 100, 100));
         subtitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         titlePanel.add(titleLabel);
-        titlePanel.add(Box.createVerticalStrut(8));
+        titlePanel.add(Box.createVerticalStrut(10));
         titlePanel.add(subtitleLabel);
 
-        // Admin badge
+        // Enhanced admin badge with gradient-like appearance
         JPanel adminPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         adminPanel.setBackground(BACKGROUND_GRAY);
+        adminPanel.setBorder(new EmptyBorder(15, 0, 0, 0));
         
-        JLabel adminBadge = new JLabel("👨‍💼 Admin Management");
-        adminBadge.setFont(new Font("Arial", Font.BOLD, 12));
-        adminBadge.setForeground(DARK_BLUE);
+        JLabel adminBadge = new JLabel("👨‍💼 Administrator Access • Flight Network Management");
+        adminBadge.setFont(new Font("Arial", Font.BOLD, 13));
+        adminBadge.setForeground(ACCENT_ORANGE);
         adminBadge.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(DARK_BLUE, 1),
-            new EmptyBorder(4, 8, 4, 8)
+            BorderFactory.createLineBorder(ACCENT_ORANGE, 2),
+            new EmptyBorder(8, 16, 8, 16)
         ));
-        adminBadge.setBackground(new Color(225, 240, 255));
+        adminBadge.setBackground(new Color(255, 248, 225));
         adminBadge.setOpaque(true);
         adminPanel.add(adminBadge);
 
@@ -799,13 +884,17 @@ public class AdminFlightDialog extends JDialog {
     }
 
     private JPanel createButtonSection() {
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 0));
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
         buttonPanel.setBackground(BACKGROUND_GRAY);
-        buttonPanel.setBorder(new EmptyBorder(25, 0, 0, 0));
+        buttonPanel.setBorder(new EmptyBorder(30, 0, 0, 0));
 
-        // Enhanced button sizing
-        saveButton.setPreferredSize(new Dimension(160, 45));
-        cancelButton.setPreferredSize(new Dimension(120, 45));
+        // Enhanced button sizing with professional dimensions
+        saveButton.setPreferredSize(new Dimension(200, 48));
+        cancelButton.setPreferredSize(new Dimension(160, 48));
+        
+        // Add subtle button styling enhancements
+        saveButton.setFont(new Font("Arial", Font.BOLD, 15));
+        cancelButton.setFont(new Font("Arial", Font.BOLD, 14));
 
         buttonPanel.add(saveButton);
         buttonPanel.add(cancelButton);
