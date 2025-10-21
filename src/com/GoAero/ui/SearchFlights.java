@@ -51,7 +51,7 @@ public class SearchFlights extends JFrame {
 
     private void initializeComponents() {
         setTitle("GoAero - Search Flights");
-        setSize(1200, 800);
+        setSize(1650, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
