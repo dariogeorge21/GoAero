@@ -291,20 +291,6 @@ public class FlightOwnerManagementPanel extends JPanel {
         content.setLayout(new BorderLayout());
         content.setBorder(new EmptyBorder(16, 18, 14, 18));
 
-        // Header
-        JPanel header = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 8));
-        header.setOpaque(false);
-        JLabel errorIcon = new JLabel("⚠");
-        errorIcon.setFont(new Font("Arial", Font.BOLD, 24));
-        errorIcon.setForeground(DANGER_RED);
-        header.add(errorIcon);
-        JLabel title = new JLabel("Operation Error");
-        title.setFont(new Font("Arial", Font.BOLD, 16));
-        title.setForeground(DARK_BLUE);
-        header.add(title);
-
-        content.add(header, BorderLayout.NORTH);
-
         // Message area
         JTextArea msgArea = new JTextArea(message);
         msgArea.setFont(new Font("Arial", Font.PLAIN, 14));

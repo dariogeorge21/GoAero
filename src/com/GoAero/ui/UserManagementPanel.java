@@ -226,16 +226,10 @@ public class UserManagementPanel extends JPanel {
 
         User selectedUser = users.get(selectedRow);
         
-        int choice = JOptionPane.showConfirmDialog(
-            this,
-            String.format("Are you sure you want to delete user '%s'?\n\nThis action cannot be undone.", 
-                selectedUser.getFullName()),
-            "Confirm Deletion",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.WARNING_MESSAGE
-        );
-
-        if (choice == JOptionPane.YES_OPTION) {
+        // Create custom styled confirmation dialog
+        boolean confirmed = showDeleteConfirmationDialog(selectedUser);
+        
+        if (confirmed) {
             try {
                 boolean success = userDAO.delete(selectedUser.getUserId());
                 if (success) {
@@ -292,20 +286,6 @@ public class UserManagementPanel extends JPanel {
         };
         content.setLayout(new BorderLayout());
         content.setBorder(new EmptyBorder(16, 18, 14, 18));
-
-        // Header
-        JPanel header = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 8));
-        header.setOpaque(false);
-        JLabel errorIcon = new JLabel("⚠");
-        errorIcon.setFont(new Font("Arial", Font.BOLD, 24));
-        errorIcon.setForeground(DANGER_RED);
-        header.add(errorIcon);
-        JLabel title = new JLabel("Operation Error");
-        title.setFont(new Font("Arial", Font.BOLD, 16));
-        title.setForeground(DARK_BLUE);
-        header.add(title);
-
-        content.add(header, BorderLayout.NORTH);
 
         // Message area
         JTextArea msgArea = new JTextArea(message);
@@ -605,5 +585,109 @@ public class UserManagementPanel extends JPanel {
         actionPanel.add(infoPanel, BorderLayout.EAST);
 
         return actionPanel;
+    }
+
+    /**
+     * Creates a modern styled delete confirmation dialog
+     */
+    private boolean showDeleteConfirmationDialog(User user) {
+        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Confirm User Deletion", true);
+        dialog.setUndecorated(true);
+        final boolean[] confirmed = {false};
+
+        // Main content with rounded background and shadow
+        JPanel content = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                int arc = 16;
+                // shadow
+                g2.setColor(new Color(0, 0, 0, 30));
+                g2.fillRoundRect(4, 8, getWidth() - 8, getHeight() - 8, arc, arc);
+                // background with warning gradient
+                GradientPaint gradient = new GradientPaint(0, 0, Color.WHITE, 0, getHeight(), new Color(255, 248, 240));
+                g2.setPaint(gradient);
+                g2.fillRoundRect(0, 0, getWidth() - 8, getHeight() - 12, arc, arc);
+                g2.dispose();
+            }
+        };
+        content.setLayout(new BorderLayout());
+        content.setBorder(new EmptyBorder(20, 25, 18, 25));
+
+        // Warning header
+        JPanel header = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 8));
+        header.setOpaque(false);
+        JLabel warningIcon = new JLabel("👤⚠");
+        warningIcon.setFont(new Font("Arial", Font.BOLD, 24));
+        warningIcon.setForeground(DANGER_RED);
+        header.add(warningIcon);
+        JLabel title = new JLabel("Delete User Account");
+        title.setFont(new Font("Arial", Font.BOLD, 18));
+        title.setForeground(DARK_BLUE);
+        header.add(title);
+
+        content.add(header, BorderLayout.NORTH);
+
+        // Message section
+        JPanel messagePanel = new JPanel();
+        messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.Y_AXIS));
+        messagePanel.setOpaque(false);
+        messagePanel.setBorder(new EmptyBorder(10, 0, 15, 0));
+
+        JLabel mainMessage = new JLabel(String.format("Are you sure you want to delete user '%s'?", user.getFullName()));
+        mainMessage.setFont(new Font("Arial", Font.BOLD, 15));
+        mainMessage.setForeground(DARK_BLUE);
+        mainMessage.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel warningMessage = new JLabel("This action cannot be undone and will permanently remove:");
+        warningMessage.setFont(new Font("Arial", Font.PLAIN, 13));
+        warningMessage.setForeground(new Color(120, 120, 120));
+        warningMessage.setAlignmentX(Component.LEFT_ALIGNMENT);
+        warningMessage.setBorder(new EmptyBorder(8, 0, 5, 0));
+
+        JLabel detailsMessage = new JLabel("• User profile and account information");
+        detailsMessage.setFont(new Font("Arial", Font.PLAIN, 13));
+        detailsMessage.setForeground(new Color(120, 120, 120));
+        detailsMessage.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel bookingsMessage = new JLabel("• Associated booking history");
+        bookingsMessage.setFont(new Font("Arial", Font.PLAIN, 13));
+        bookingsMessage.setForeground(new Color(120, 120, 120));
+        bookingsMessage.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        messagePanel.add(mainMessage);
+        messagePanel.add(warningMessage);
+        messagePanel.add(detailsMessage);
+        messagePanel.add(bookingsMessage);
+
+        content.add(messagePanel, BorderLayout.CENTER);
+
+        // Button panel
+        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 0));
+        btnPanel.setOpaque(false);
+        
+        JButton deleteBtn = createStyledButton("🗑 Delete User", DANGER_RED, Color.WHITE, 14);
+        deleteBtn.setPreferredSize(new Dimension(130, 40));
+        deleteBtn.addActionListener(e -> {
+            confirmed[0] = true;
+            dialog.dispose();
+        });
+        
+        JButton cancelBtn = createStyledButton("❌ Cancel", LIGHT_GRAY, DARK_BLUE, 14);
+        cancelBtn.setPreferredSize(new Dimension(100, 40));
+        cancelBtn.addActionListener(e -> dialog.dispose());
+        
+        btnPanel.add(deleteBtn);
+        btnPanel.add(cancelBtn);
+        content.add(btnPanel, BorderLayout.SOUTH);
+
+        dialog.setContentPane(content);
+        dialog.pack();
+        dialog.setSize(Math.max(450, dialog.getWidth()), dialog.getHeight());
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+        
+        return confirmed[0];
     }
 }
