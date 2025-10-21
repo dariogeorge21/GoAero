@@ -52,7 +52,7 @@ public class AdminFlightOwnerDialog extends JDialog {
     }
 
     private void initializeComponents() {
-        setSize(650, 650);
+        setSize(850, 750);
         setLocationRelativeTo(getParent());
         setResizable(false);
 
