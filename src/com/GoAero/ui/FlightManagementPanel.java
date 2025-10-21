@@ -239,19 +239,10 @@ public class FlightManagementPanel extends JPanel {
 
         Flight selectedFlight = flights.get(selectedRow);
         
-        int choice = JOptionPane.showConfirmDialog(
-            this,
-            String.format("Are you sure you want to delete flight '%s'?\n\nRoute: %s\nDeparture: %s\n\nThis will also cancel all associated bookings.\nThis action cannot be undone.", 
-                selectedFlight.getFlightCode(),
-                selectedFlight.getRoute(),
-                selectedFlight.getDepartureTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
-            ),
-            "Confirm Deletion",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.WARNING_MESSAGE
-        );
-
-        if (choice == JOptionPane.YES_OPTION) {
+        // Create custom styled confirmation dialog
+        boolean confirmed = showDeleteConfirmationDialog(selectedFlight);
+        
+        if (confirmed) {
             try {
                 boolean success = flightDAO.delete(selectedFlight.getFlightId());
                 if (success) {
@@ -713,5 +704,139 @@ public class FlightManagementPanel extends JPanel {
 
             return this;
         }
+    }
+
+    /**
+     * Creates a modern styled delete confirmation dialog for flights
+     */
+    private boolean showDeleteConfirmationDialog(Flight flight) {
+        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Confirm Flight Deletion", true);
+        dialog.setUndecorated(true);
+        final boolean[] confirmed = {false};
+
+        // Main content with rounded background and shadow
+        JPanel content = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                int arc = 16;
+                // shadow
+                g2.setColor(new Color(0, 0, 0, 30));
+                g2.fillRoundRect(4, 8, getWidth() - 8, getHeight() - 8, arc, arc);
+                // background with warning gradient
+                GradientPaint gradient = new GradientPaint(0, 0, Color.WHITE, 0, getHeight(), new Color(255, 248, 240));
+                g2.setPaint(gradient);
+                g2.fillRoundRect(0, 0, getWidth() - 8, getHeight() - 12, arc, arc);
+                g2.dispose();
+            }
+        };
+        content.setLayout(new BorderLayout());
+        content.setBorder(new EmptyBorder(20, 25, 18, 25));
+
+        // Warning header
+        JPanel header = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 8));
+        header.setOpaque(false);
+        JLabel warningIcon = new JLabel("✈⚠");
+        warningIcon.setFont(new Font("Arial", Font.BOLD, 24));
+        warningIcon.setForeground(DANGER_RED);
+        header.add(warningIcon);
+        JLabel title = new JLabel("Delete Flight Schedule");
+        title.setFont(new Font("Arial", Font.BOLD, 18));
+        title.setForeground(DARK_BLUE);
+        header.add(title);
+
+        content.add(header, BorderLayout.NORTH);
+
+        // Flight details and warning message section
+        JPanel messagePanel = new JPanel();
+        messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.Y_AXIS));
+        messagePanel.setOpaque(false);
+        messagePanel.setBorder(new EmptyBorder(10, 0, 15, 0));
+
+        // Flight identification
+        JPanel flightInfoPanel = new JPanel(new BorderLayout());
+        flightInfoPanel.setOpaque(false);
+        flightInfoPanel.setBorder(new EmptyBorder(0, 0, 15, 0));
+        
+        JLabel flightCodeLabel = new JLabel(flight.getFlightCode());
+        flightCodeLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        flightCodeLabel.setForeground(PRIMARY_BLUE);
+        
+        JLabel routeLabel = new JLabel(flight.getRoute() != null ? flight.getRoute() : "Route TBD");
+        routeLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        routeLabel.setForeground(DARK_BLUE);
+        
+        JLabel scheduleLabel = new JLabel(flight.getDepartureTime() != null ? 
+            "Departure: " + flight.getDepartureTime().format(DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm")) : 
+            "Departure: TBD");
+        scheduleLabel.setFont(new Font("Arial", Font.PLAIN, 13));
+        scheduleLabel.setForeground(new Color(120, 120, 120));
+
+        flightInfoPanel.add(flightCodeLabel, BorderLayout.NORTH);
+        flightInfoPanel.add(routeLabel, BorderLayout.CENTER);
+        flightInfoPanel.add(scheduleLabel, BorderLayout.SOUTH);
+
+        JLabel mainMessage = new JLabel("Are you sure you want to delete this flight?");
+        mainMessage.setFont(new Font("Arial", Font.BOLD, 15));
+        mainMessage.setForeground(DARK_BLUE);
+        mainMessage.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel warningMessage = new JLabel("This action cannot be undone and will permanently:");
+        warningMessage.setFont(new Font("Arial", Font.PLAIN, 13));
+        warningMessage.setForeground(new Color(120, 120, 120));
+        warningMessage.setAlignmentX(Component.LEFT_ALIGNMENT);
+        warningMessage.setBorder(new EmptyBorder(8, 0, 5, 0));
+
+        JLabel consequence1 = new JLabel("• Remove flight from the schedule network");
+        consequence1.setFont(new Font("Arial", Font.PLAIN, 13));
+        consequence1.setForeground(new Color(120, 120, 120));
+        consequence1.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel consequence2 = new JLabel("• Cancel all existing passenger bookings");
+        consequence2.setFont(new Font("Arial", Font.PLAIN, 13));
+        consequence2.setForeground(DANGER_RED);
+        consequence2.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel consequence3 = new JLabel("• Notify affected passengers and airlines");
+        consequence3.setFont(new Font("Arial", Font.PLAIN, 13));
+        consequence3.setForeground(new Color(120, 120, 120));
+        consequence3.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        messagePanel.add(flightInfoPanel);
+        messagePanel.add(mainMessage);
+        messagePanel.add(warningMessage);
+        messagePanel.add(consequence1);
+        messagePanel.add(consequence2);
+        messagePanel.add(consequence3);
+
+        content.add(messagePanel, BorderLayout.CENTER);
+
+        // Button panel
+        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 0));
+        btnPanel.setOpaque(false);
+        
+        JButton deleteBtn = createStyledButton("🗑 Delete Flight", DANGER_RED, Color.WHITE, 14);
+        deleteBtn.setPreferredSize(new Dimension(140, 40));
+        deleteBtn.addActionListener(e -> {
+            confirmed[0] = true;
+            dialog.dispose();
+        });
+        
+        JButton cancelBtn = createStyledButton("❌ Cancel", LIGHT_GRAY, DARK_BLUE, 14);
+        cancelBtn.setPreferredSize(new Dimension(100, 40));
+        cancelBtn.addActionListener(e -> dialog.dispose());
+        
+        btnPanel.add(deleteBtn);
+        btnPanel.add(cancelBtn);
+        content.add(btnPanel, BorderLayout.SOUTH);
+
+        dialog.setContentPane(content);
+        dialog.pack();
+        dialog.setSize(Math.max(480, dialog.getWidth()), dialog.getHeight());
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+        
+        return confirmed[0];
     }
 }

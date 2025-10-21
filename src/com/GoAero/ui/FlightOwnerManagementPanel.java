@@ -224,16 +224,10 @@ public class FlightOwnerManagementPanel extends JPanel {
 
         FlightOwner selectedOwner = flightOwners.get(selectedRow);
         
-        int choice = JOptionPane.showConfirmDialog(
-            this,
-            String.format("Are you sure you want to delete airline '%s (%s)'?\n\nThis will also delete all associated flights.\nThis action cannot be undone.", 
-                selectedOwner.getCompanyName(), selectedOwner.getCompanyCode()),
-            "Confirm Deletion",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.WARNING_MESSAGE
-        );
-
-        if (choice == JOptionPane.YES_OPTION) {
+        // Create custom styled confirmation dialog
+        boolean confirmed = showDeleteConfirmationDialog(selectedOwner);
+        
+        if (confirmed) {
             try {
                 boolean success = flightOwnerDAO.delete(selectedOwner.getOwnerId());
                 if (success) {
@@ -624,5 +618,158 @@ public class FlightOwnerManagementPanel extends JPanel {
 
             return this;
         }
+    }
+
+    /**
+     * Creates a modern styled delete confirmation dialog for airline companies
+     */
+    private boolean showDeleteConfirmationDialog(FlightOwner flightOwner) {
+        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Confirm Airline Deletion", true);
+        dialog.setUndecorated(true);
+        final boolean[] confirmed = {false};
+
+        // Main content with rounded background and shadow
+        JPanel content = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                int arc = 16;
+                // shadow
+                g2.setColor(new Color(0, 0, 0, 30));
+                g2.fillRoundRect(4, 8, getWidth() - 8, getHeight() - 8, arc, arc);
+                // background with warning gradient
+                GradientPaint gradient = new GradientPaint(0, 0, Color.WHITE, 0, getHeight(), new Color(255, 248, 240));
+                g2.setPaint(gradient);
+                g2.fillRoundRect(0, 0, getWidth() - 8, getHeight() - 12, arc, arc);
+                g2.dispose();
+            }
+        };
+        content.setLayout(new BorderLayout());
+        content.setBorder(new EmptyBorder(20, 25, 18, 25));
+
+        // Warning header
+        JPanel header = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 8));
+        header.setOpaque(false);
+        JLabel warningIcon = new JLabel("🏢⚠");
+        warningIcon.setFont(new Font("Arial", Font.BOLD, 24));
+        warningIcon.setForeground(DANGER_RED);
+        header.add(warningIcon);
+        JLabel title = new JLabel("Delete Airline Company");
+        title.setFont(new Font("Arial", Font.BOLD, 18));
+        title.setForeground(DARK_BLUE);
+        header.add(title);
+
+        content.add(header, BorderLayout.NORTH);
+
+        // Airline details and warning message section
+        JPanel messagePanel = new JPanel();
+        messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.Y_AXIS));
+        messagePanel.setOpaque(false);
+        messagePanel.setBorder(new EmptyBorder(10, 0, 15, 0));
+
+        // Airline identification panel
+        JPanel airlineInfoPanel = new JPanel(new BorderLayout());
+        airlineInfoPanel.setOpaque(false);
+        airlineInfoPanel.setBorder(new EmptyBorder(0, 0, 15, 0));
+        
+        JLabel companyCodeLabel = new JLabel(flightOwner.getCompanyCode());
+        companyCodeLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        companyCodeLabel.setForeground(PRIMARY_BLUE);
+        
+        JLabel companyNameLabel = new JLabel(flightOwner.getCompanyName());
+        companyNameLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        companyNameLabel.setForeground(DARK_BLUE);
+        
+        JLabel contactInfoLabel = new JLabel(flightOwner.getContactInfo() != null ? 
+            "Contact: " + flightOwner.getContactInfo() : "Contact: N/A");
+        contactInfoLabel.setFont(new Font("Arial", Font.PLAIN, 13));
+        contactInfoLabel.setForeground(new Color(120, 120, 120));
+        
+        JLabel flightCountLabel = new JLabel("Active Flights: " + flightOwner.getFlightCount());
+        flightCountLabel.setFont(new Font("Arial", Font.PLAIN, 13));
+        if (flightOwner.getFlightCount() > 0) {
+            flightCountLabel.setForeground(DANGER_RED);
+        } else {
+            flightCountLabel.setForeground(new Color(120, 120, 120));
+        }
+
+        airlineInfoPanel.add(companyCodeLabel, BorderLayout.NORTH);
+        airlineInfoPanel.add(companyNameLabel, BorderLayout.CENTER);
+        
+        JPanel detailsPanel = new JPanel();
+        detailsPanel.setLayout(new BoxLayout(detailsPanel, BoxLayout.Y_AXIS));
+        detailsPanel.setOpaque(false);
+        detailsPanel.add(contactInfoLabel);
+        detailsPanel.add(flightCountLabel);
+        airlineInfoPanel.add(detailsPanel, BorderLayout.SOUTH);
+
+        JLabel mainMessage = new JLabel("Are you sure you want to delete this airline company?");
+        mainMessage.setFont(new Font("Arial", Font.BOLD, 15));
+        mainMessage.setForeground(DARK_BLUE);
+        mainMessage.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel warningMessage = new JLabel("This action cannot be undone and will permanently:");
+        warningMessage.setFont(new Font("Arial", Font.PLAIN, 13));
+        warningMessage.setForeground(new Color(120, 120, 120));
+        warningMessage.setAlignmentX(Component.LEFT_ALIGNMENT);
+        warningMessage.setBorder(new EmptyBorder(8, 0, 5, 0));
+
+        JLabel consequence1 = new JLabel("• Remove airline company from the system");
+        consequence1.setFont(new Font("Arial", Font.PLAIN, 13));
+        consequence1.setForeground(new Color(120, 120, 120));
+        consequence1.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel consequence2 = new JLabel("• Delete all associated flight schedules");
+        consequence2.setFont(new Font("Arial", Font.PLAIN, 13));
+        consequence2.setForeground(DANGER_RED);
+        consequence2.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel consequence3 = new JLabel("• Cancel all existing passenger bookings");
+        consequence3.setFont(new Font("Arial", Font.PLAIN, 13));
+        consequence3.setForeground(DANGER_RED);
+        consequence3.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel consequence4 = new JLabel("• Revoke airline access credentials");
+        consequence4.setFont(new Font("Arial", Font.PLAIN, 13));
+        consequence4.setForeground(new Color(120, 120, 120));
+        consequence4.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        messagePanel.add(airlineInfoPanel);
+        messagePanel.add(mainMessage);
+        messagePanel.add(warningMessage);
+        messagePanel.add(consequence1);
+        messagePanel.add(consequence2);
+        messagePanel.add(consequence3);
+        messagePanel.add(consequence4);
+
+        content.add(messagePanel, BorderLayout.CENTER);
+
+        // Button panel
+        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 0));
+        btnPanel.setOpaque(false);
+        
+        JButton deleteBtn = createStyledButton("🗑 Delete Airline", DANGER_RED, Color.WHITE, 14);
+        deleteBtn.setPreferredSize(new Dimension(150, 40));
+        deleteBtn.addActionListener(e -> {
+            confirmed[0] = true;
+            dialog.dispose();
+        });
+        
+        JButton cancelBtn = createStyledButton("❌ Cancel", LIGHT_GRAY, DARK_BLUE, 14);
+        cancelBtn.setPreferredSize(new Dimension(100, 40));
+        cancelBtn.addActionListener(e -> dialog.dispose());
+        
+        btnPanel.add(deleteBtn);
+        btnPanel.add(cancelBtn);
+        content.add(btnPanel, BorderLayout.SOUTH);
+
+        dialog.setContentPane(content);
+        dialog.pack();
+        dialog.setSize(Math.max(500, dialog.getWidth()), dialog.getHeight());
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+        
+        return confirmed[0];
     }
 }
