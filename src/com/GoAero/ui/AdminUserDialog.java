@@ -55,7 +55,7 @@ public class AdminUserDialog extends JDialog {
     }
 
     private void initializeComponents() {
-        setSize(580, 720);
+        setSize(750, 720);
         setLocationRelativeTo(getParent());
         setResizable(false);
 
