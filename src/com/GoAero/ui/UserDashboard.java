@@ -397,10 +397,10 @@ public class UserDashboard extends JFrame {
         messagePanel.setOpaque(false);
         messagePanel.setBorder(new EmptyBorder(10, 6, 15, 6));
         
-        JLabel message = new JLabel("You've been successfully logged out.");
+        JLabel message = new JLabel("You've been successfully logged out. Redirecting....");
         message.setFont(new Font("Arial", Font.PLAIN, 14));
         
-        JLabel subMessage = new JLabel("We hope to see you back soon for your next journey!");
+        JLabel subMessage = new JLabel("See you soon!");
         subMessage.setFont(new Font("Arial", Font.ITALIC, 12));
         subMessage.setForeground(new Color(100, 100, 100));
         subMessage.setBorder(new EmptyBorder(5, 0, 0, 0));
@@ -409,28 +409,13 @@ public class UserDashboard extends JFrame {
         messagePanel.add(subMessage, BorderLayout.CENTER);
         content.add(messagePanel, BorderLayout.CENTER);
 
-        // Auto-close timer and manual button
-        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        btnPanel.setOpaque(false);
-        JButton okBtn = createStyledButton("🏠 Back to Home", SUCCESS_GREEN, Color.WHITE, 14);
-        okBtn.setPreferredSize(new Dimension(150, 36));
-        okBtn.addActionListener(e -> {
-            farewellDialog.dispose();
-            SwingUtilities.invokeLater(() -> {
-                new LandingPage().setVisible(true);
-                dispose();
-            });
-        });
-        btnPanel.add(okBtn);
-        content.add(btnPanel, BorderLayout.SOUTH);
-
         farewellDialog.setContentPane(content);
         farewellDialog.pack();
         farewellDialog.setSize(Math.max(400, farewellDialog.getWidth()), farewellDialog.getHeight());
         farewellDialog.setLocationRelativeTo(this);
 
         // Auto-close timer (3.5 seconds for passenger context)
-        Timer autoCloseTimer = new Timer(3500, e -> {
+        Timer autoCloseTimer = new Timer(2500, e -> {
             farewellDialog.dispose();
             SwingUtilities.invokeLater(() -> {
                 new LandingPage().setVisible(true);
