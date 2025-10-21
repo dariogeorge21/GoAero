@@ -16,7 +16,7 @@ public class ValidationUtil {
     
     // Phone number pattern (supports various formats)
     private static final Pattern PHONE_PATTERN = Pattern.compile(
-        "^[+]?[0-9]{10,15}$"
+        "^[+]?[^A-Za-z]{10,15}$" // accept digits and common separators pre-cleaning
     );
     
     // Airport code pattern (3-4 uppercase letters)
@@ -24,11 +24,11 @@ public class ValidationUtil {
         "^[A-Z]{3,4}$"
     );
     
-    // Flight code pattern (2-3 letters followed by 1-4 numbers)
-    private static final Pattern FLIGHT_CODE_PATTERN = Pattern.compile(
-        "^[A-Z]{2,3}[0-9]{1,4}$"
-    );
-    
+    // Flight code: no regex validation anymore; auto-uppercase only (see formatFlightCode)
+    // private static final Pattern FLIGHT_CODE_PATTERN = Pattern.compile(
+    //     "^[A-Z]{2,3}[0-9]{1,4}$"
+    // );
+
     // Company code pattern (2-5 uppercase letters/numbers)
     private static final Pattern COMPANY_CODE_PATTERN = Pattern.compile(
         "^[A-Z0-9]{2,5}$"
@@ -66,10 +66,11 @@ public class ValidationUtil {
     /**
      * Validates flight code format
      * @param code The flight code to validate
-     * @return true if flight code is valid
+     * @return true (no validation; flight code is auto-uppercased only)
      */
     public static boolean isValidFlightCode(String code) {
-        return code != null && FLIGHT_CODE_PATTERN.matcher(code.trim().toUpperCase()).matches();
+        // No validation: accept any input. Callers should use formatFlightCode to uppercase.
+        return true;
     }
 
     /**
@@ -81,7 +82,7 @@ public class ValidationUtil {
         return code != null && COMPANY_CODE_PATTERN.matcher(code.trim().toUpperCase()).matches();
     }
 
-    /**
+    /**getFlightCodeErrorMessage()
      * Validates that a string is not null or empty
      * @param value The string to validate
      * @return true if string is not null or empty
@@ -253,10 +254,10 @@ public class ValidationUtil {
 
     /**
      * Gets validation error message for flight code
-     * @return Error message for invalid flight code
+     * @return Info message (validation disabled)
      */
     public static String getFlightCodeErrorMessage() {
-        return "Flight code must be 2-3 letters followed by 1-4 numbers (e.g., AA101, BA2045)";
+        return "Flight code accepts any format and will be auto-uppercased.";
     }
 
     /**
