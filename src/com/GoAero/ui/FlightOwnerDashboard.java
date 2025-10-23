@@ -468,7 +468,7 @@ public class FlightOwnerDashboard extends JFrame {
         messagePanel.setOpaque(false);
         messagePanel.setBorder(new EmptyBorder(8, 6, 12, 6));
         
-        JLabel message = new JLabel("Your airline session has ended successfully.");
+        JLabel message = new JLabel("Logged out suucessfully. Redirecting...");
         message.setFont(new Font("Arial", Font.PLAIN, 14));
         
         JLabel subMessage = new JLabel("Thank you for using GoAero's airline portal.");
@@ -483,16 +483,6 @@ public class FlightOwnerDashboard extends JFrame {
         // Auto-close timer and manual button
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         btnPanel.setOpaque(false);
-        JButton okBtn = createStyledButton("Return to Login", SUCCESS_GREEN, Color.WHITE, 14);
-        okBtn.setPreferredSize(new Dimension(140, 36));
-        okBtn.addActionListener(e -> {
-            successDialog.dispose();
-            SwingUtilities.invokeLater(() -> {
-                new LandingPage().setVisible(true);
-                dispose();
-            });
-        });
-        btnPanel.add(okBtn);
         content.add(btnPanel, BorderLayout.SOUTH);
 
         successDialog.setContentPane(content);
@@ -500,8 +490,8 @@ public class FlightOwnerDashboard extends JFrame {
         successDialog.setSize(Math.max(380, successDialog.getWidth()), successDialog.getHeight());
         successDialog.setLocationRelativeTo(this);
 
-        // Auto-close timer (4 seconds for airline context)
-        Timer autoCloseTimer = new Timer(4000, e -> {
+        // Auto-close timer (2 seconds for airline context)
+        Timer autoCloseTimer = new Timer(2000, e -> {
             successDialog.dispose();
             SwingUtilities.invokeLater(() -> {
                 new LandingPage().setVisible(true);
