@@ -50,6 +50,9 @@ public class FlightOwnerDashboard extends JFrame {
         setResizable(true);
         setMinimumSize(new Dimension(1200, 800));
 
+        // Set the window to open in maximized state
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+
         // Enhanced welcome label with airline branding
         welcomeLabel = new JLabel("✈️ " + currentFlightOwner.getCompanyName());
         welcomeLabel.setFont(new Font("Arial", Font.BOLD, 28));

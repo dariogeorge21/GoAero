@@ -95,73 +95,48 @@ public class OwnerProfilePanel extends JPanel {
         JPanel buttonSection = createButtonSection();
         mainPanel.add(buttonSection, BorderLayout.SOUTH);
 
-        add(mainPanel, BorderLayout.CENTER);
+        // Wrap main panel in a scroll pane to handle content overflow
+        JScrollPane scrollPane = new JScrollPane(mainPanel);
+        scrollPane.setBackground(BACKGROUND_GRAY);
+        scrollPane.getViewport().setBackground(BACKGROUND_GRAY);
+        scrollPane.setBorder(null); // Remove default border
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+        // Configure scroll speed for better user experience
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        scrollPane.getVerticalScrollBar().setBlockIncrement(64);
+
+        // Style the scroll bar to match the modern theme
+        scrollPane.getVerticalScrollBar().setBackground(LIGHT_GRAY);
+        scrollPane.getVerticalScrollBar().setUI(new javax.swing.plaf.basic.BasicScrollBarUI() {
+            @Override
+            protected void configureScrollBarColors() {
+                this.thumbColor = PRIMARY_BLUE;
+                this.trackColor = LIGHT_GRAY;
+            }
+
+            @Override
+            protected JButton createDecreaseButton(int orientation) {
+                JButton button = super.createDecreaseButton(orientation);
+                button.setBackground(LIGHT_GRAY);
+                button.setBorder(null);
+                return button;
+            }
+
+            @Override
+            protected JButton createIncreaseButton(int orientation) {
+                JButton button = super.createIncreaseButton(orientation);
+                button.setBackground(LIGHT_GRAY);
+                button.setBorder(null);
+                return button;
+            }
+        });
+
+        add(scrollPane, BorderLayout.CENTER);
     }
 
-    private JPanel createCompanyPanel() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Company Information"));
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 15, 10, 15);
-        gbc.anchor = GridBagConstraints.WEST;
 
-        // Company Name
-        gbc.gridx = 0; gbc.gridy = 0;
-        panel.add(new JLabel("Company Name:"), gbc);
-        gbc.gridx = 1;
-        panel.add(companyNameField, gbc);
-
-        // Company Code
-        gbc.gridx = 0; gbc.gridy = 1;
-        panel.add(new JLabel("Company Code:"), gbc);
-        gbc.gridx = 1;
-        JPanel codePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        codePanel.add(companyCodeField);
-        codePanel.add(new JLabel(" (Cannot be changed)"));
-        panel.add(codePanel, gbc);
-
-        // Contact Info
-        gbc.gridx = 0; gbc.gridy = 2;
-        panel.add(new JLabel("Contact Information:"), gbc);
-        gbc.gridx = 1;
-        panel.add(contactInfoField, gbc);
-
-        return panel;
-    }
-
-    private JPanel createPasswordPanel() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Change Password"));
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 15, 10, 15);
-        gbc.anchor = GridBagConstraints.WEST;
-
-        // Current Password
-        gbc.gridx = 0; gbc.gridy = 0;
-        panel.add(new JLabel("Current Password:"), gbc);
-        gbc.gridx = 1;
-        panel.add(currentPasswordField, gbc);
-
-        // New Password
-        gbc.gridx = 0; gbc.gridy = 1;
-        panel.add(new JLabel("New Password:"), gbc);
-        gbc.gridx = 1;
-        panel.add(newPasswordField, gbc);
-
-        // Confirm New Password
-        gbc.gridx = 0; gbc.gridy = 2;
-        panel.add(new JLabel("Confirm New Password:"), gbc);
-        gbc.gridx = 1;
-        panel.add(confirmPasswordField, gbc);
-
-        // Password requirements
-        gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 2;
-        JLabel requirementsLabel = new JLabel("<html><small>" + PasswordUtil.getPasswordRequirements() + "</small></html>");
-        requirementsLabel.setForeground(Color.GRAY);
-        panel.add(requirementsLabel, gbc);
-
-        return panel;
-    }
 
     private void setupEventListeners() {
         saveButton.addActionListener(e -> saveProfile());
@@ -610,56 +585,76 @@ public class OwnerProfilePanel extends JPanel {
             new EmptyBorder(25, 25, 25, 25)
         ));
 
-        // Card header
+        // Card header with proper spacing
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setBackground(CARD_WHITE);
+        headerPanel.setBorder(new EmptyBorder(0, 0, 20, 0));
+
         JLabel cardTitle = new JLabel("📋 Company Information");
         cardTitle.setFont(new Font("Arial", Font.BOLD, 16));
         cardTitle.setForeground(DARK_BLUE);
+        headerPanel.add(cardTitle, BorderLayout.WEST);
 
-        // Form panel
+        // Form panel with improved spacing
         JPanel formPanel = new JPanel(new GridBagLayout());
         formPanel.setBackground(CARD_WHITE);
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(15, 0, 15, 0);
+        gbc.insets = new Insets(12, 10, 12, 10); // Increased horizontal spacing
         gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0; // Allow horizontal expansion
 
-        // Company Name
-        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
+        // Company Name section
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 1;
         JLabel nameLabel = new JLabel("Company Name");
         nameLabel.setFont(new Font("Arial", Font.BOLD, 14));
         nameLabel.setForeground(DARK_BLUE);
         formPanel.add(nameLabel, gbc);
 
         gbc.gridy = 1;
+        gbc.insets = new Insets(5, 10, 20, 10); // Larger bottom spacing after field
         formPanel.add(companyNameField, gbc);
 
-        // Company Code
+        // Company Code section
         gbc.gridy = 2;
+        gbc.insets = new Insets(12, 10, 12, 10); // Reset to normal spacing
         JLabel codeLabel = new JLabel("Company Code");
         codeLabel.setFont(new Font("Arial", Font.BOLD, 14));
         codeLabel.setForeground(DARK_BLUE);
         formPanel.add(codeLabel, gbc);
 
         gbc.gridy = 3;
-        JPanel codePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        gbc.insets = new Insets(5, 10, 20, 10); // Larger bottom spacing after field
+        JPanel codePanel = new JPanel(new BorderLayout());
         codePanel.setBackground(CARD_WHITE);
-        codePanel.add(companyCodeField);
-        JLabel codeHint = new JLabel("  (Cannot be changed)");
+        codePanel.add(companyCodeField, BorderLayout.CENTER);
+
+        JLabel codeHint = new JLabel("(Cannot be changed)");
         codeHint.setFont(new Font("Arial", Font.ITALIC, 12));
         codeHint.setForeground(new Color(120, 120, 120));
-        codePanel.add(codeHint);
+        codeHint.setBorder(new EmptyBorder(5, 0, 0, 0));
+        codePanel.add(codeHint, BorderLayout.SOUTH);
         formPanel.add(codePanel, gbc);
 
-        // Contact Information
+        // Contact Information section
         gbc.gridy = 4;
+        gbc.insets = new Insets(12, 10, 12, 10); // Reset to normal spacing
         JLabel contactLabel = new JLabel("Contact Information");
         contactLabel.setFont(new Font("Arial", Font.BOLD, 14));
         contactLabel.setForeground(DARK_BLUE);
         formPanel.add(contactLabel, gbc);
 
         gbc.gridy = 5;
+        gbc.insets = new Insets(5, 10, 10, 10); // Final field spacing
         formPanel.add(contactInfoField, gbc);
 
-        card.add(cardTitle, BorderLayout.NORTH);
+        // Add vertical glue to push content to top
+        gbc.gridy = 6;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        formPanel.add(Box.createVerticalGlue(), gbc);
+
+        card.add(headerPanel, BorderLayout.NORTH);
         card.add(formPanel, BorderLayout.CENTER);
 
         return card;
@@ -673,67 +668,86 @@ public class OwnerProfilePanel extends JPanel {
             new EmptyBorder(25, 25, 25, 25)
         ));
 
-        // Card header
+        // Card header with proper spacing
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(CARD_WHITE);
-        
+        headerPanel.setBorder(new EmptyBorder(0, 0, 20, 0));
+
         JLabel cardTitle = new JLabel("🔐 Security Settings");
         cardTitle.setFont(new Font("Arial", Font.BOLD, 16));
         cardTitle.setForeground(DARK_BLUE);
-        
+
         headerPanel.add(cardTitle, BorderLayout.WEST);
         headerPanel.add(changePasswordButton, BorderLayout.EAST);
+
+        // Main content panel that will switch between security info and password form
+        JPanel contentPanel = new JPanel(new BorderLayout());
+        contentPanel.setBackground(CARD_WHITE);
 
         // Password form panel (initially hidden)
         passwordPanel = new JPanel(new GridBagLayout());
         passwordPanel.setBackground(CARD_WHITE);
         passwordPanel.setVisible(false);
-        
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(15, 0, 15, 0);
-        gbc.anchor = GridBagConstraints.WEST;
 
-        // Current Password
-        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(12, 10, 12, 10); // Improved horizontal spacing
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0; // Allow horizontal expansion
+
+        // Current Password section
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 1;
         JLabel currentPwdLabel = new JLabel("Current Password");
         currentPwdLabel.setFont(new Font("Arial", Font.BOLD, 14));
         currentPwdLabel.setForeground(DARK_BLUE);
         passwordPanel.add(currentPwdLabel, gbc);
 
         gbc.gridy = 1;
+        gbc.insets = new Insets(5, 10, 20, 10); // Larger bottom spacing after field
         passwordPanel.add(currentPasswordField, gbc);
 
-        // New Password
+        // New Password section
         gbc.gridy = 2;
+        gbc.insets = new Insets(12, 10, 12, 10); // Reset to normal spacing
         JLabel newPwdLabel = new JLabel("New Password");
         newPwdLabel.setFont(new Font("Arial", Font.BOLD, 14));
         newPwdLabel.setForeground(DARK_BLUE);
         passwordPanel.add(newPwdLabel, gbc);
 
         gbc.gridy = 3;
+        gbc.insets = new Insets(5, 10, 20, 10); // Larger bottom spacing after field
         passwordPanel.add(newPasswordField, gbc);
 
-        // Confirm New Password
+        // Confirm New Password section
         gbc.gridy = 4;
+        gbc.insets = new Insets(12, 10, 12, 10); // Reset to normal spacing
         JLabel confirmPwdLabel = new JLabel("Confirm New Password");
         confirmPwdLabel.setFont(new Font("Arial", Font.BOLD, 14));
         confirmPwdLabel.setForeground(DARK_BLUE);
         passwordPanel.add(confirmPwdLabel, gbc);
 
         gbc.gridy = 5;
+        gbc.insets = new Insets(5, 10, 20, 10); // Larger bottom spacing after field
         passwordPanel.add(confirmPasswordField, gbc);
 
-        // Password requirements
+        // Password requirements section
         gbc.gridy = 6;
+        gbc.insets = new Insets(10, 10, 10, 10);
         JLabel requirementsLabel = new JLabel("<html><small>" + PasswordUtil.getPasswordRequirements() + "</small></html>");
         requirementsLabel.setForeground(new Color(120, 120, 120));
         passwordPanel.add(requirementsLabel, gbc);
 
+        // Add vertical glue to push content to top
+        gbc.gridy = 7;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        passwordPanel.add(Box.createVerticalGlue(), gbc);
+
         // Security info panel (shown when password panel is hidden)
         JPanel securityInfo = new JPanel(new BorderLayout());
         securityInfo.setBackground(CARD_WHITE);
-        securityInfo.setBorder(new EmptyBorder(20, 0, 0, 0));
-        
+        securityInfo.setBorder(new EmptyBorder(40, 20, 40, 20));
+
         JLabel securityText = new JLabel("<html><div style='text-align: center;'>" +
                 "🛡️<br><br>" +
                 "Your account security is protected.<br>" +
@@ -745,9 +759,12 @@ public class OwnerProfilePanel extends JPanel {
         securityText.setHorizontalAlignment(SwingConstants.CENTER);
         securityInfo.add(securityText, BorderLayout.CENTER);
 
+        // Add both panels to content panel
+        contentPanel.add(passwordPanel, BorderLayout.CENTER);
+        contentPanel.add(securityInfo, BorderLayout.SOUTH);
+
         card.add(headerPanel, BorderLayout.NORTH);
-        card.add(passwordPanel, BorderLayout.CENTER);
-        card.add(securityInfo, BorderLayout.SOUTH);
+        card.add(contentPanel, BorderLayout.CENTER);
 
         return card;
     }
