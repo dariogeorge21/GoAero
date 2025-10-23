@@ -135,6 +135,7 @@ public class LoginScreen extends JFrame {
         ownerRegisterButton = createStyledButton("🏢 Register Company", SUCCESS_GREEN, Color.WHITE, 14);
     }
 
+    @SuppressWarnings("unused")
     private JTextField createStyledTextField(int columns) {
         JTextField field = new JTextField(columns);
         field.setFont(new Font("Arial", Font.PLAIN, 14));
