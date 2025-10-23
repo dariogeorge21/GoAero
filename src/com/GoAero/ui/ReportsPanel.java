@@ -95,6 +95,7 @@ public class ReportsPanel extends JPanel {
         add(mainPanel, BorderLayout.CENTER);
     }
 
+    @SuppressWarnings("unused")
     private JPanel createOverviewPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setBorder(BorderFactory.createTitledBorder("System Overview"));
@@ -133,6 +134,7 @@ public class ReportsPanel extends JPanel {
         return panel;
     }
 
+    @SuppressWarnings("unused")
     private JPanel createBookingStatsPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setBorder(BorderFactory.createTitledBorder("Booking Statistics"));
@@ -167,6 +169,7 @@ public class ReportsPanel extends JPanel {
         return panel;
     }
 
+    @SuppressWarnings("unused")
     private JPanel createRevenuePanel() {
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setBorder(BorderFactory.createTitledBorder("Revenue Information"));
