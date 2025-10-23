@@ -188,7 +188,7 @@ public class AdminFlightDialog extends JDialog {
 
         // Price
         gbc.gridx = 0; gbc.gridy = 8;
-        JLabel priceLabel = new JLabel("Price ($):");
+        JLabel priceLabel = new JLabel("Price (₹):");
         priceLabel.setFont(new Font("Arial", Font.BOLD, 12));
         formPanel.add(priceLabel, gbc);
         gbc.gridx = 1;

@@ -149,7 +149,7 @@ public class BookingManagementPanel extends JPanel {
                 booking.getFlightCode(),
                 booking.getFullRoute(),
                 booking.getDateOfDeparture().format(DateTimeFormatter.ofPattern("MM-dd")),
-                String.format("$%.2f", booking.getAmount()),
+                String.format("₹%.2f", booking.getAmount()),
                 booking.getPaymentStatus().getDisplayName(),
                 booking.getBookingStatus().getDisplayName()
             };

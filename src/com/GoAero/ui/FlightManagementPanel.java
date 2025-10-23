@@ -149,7 +149,7 @@ public class FlightManagementPanel extends JPanel {
                 flight.getRoute(),
                 flight.getDepartureTime().format(DateTimeFormatter.ofPattern("MM-dd HH:mm")),
                 flight.getDestinationTime().format(DateTimeFormatter.ofPattern("MM-dd HH:mm")),
-                String.format("$%.2f", flight.getPrice()),
+                String.format("₹%.2f", flight.getPrice()),
                 flight.getCapacity(),
                 flight.getAvailableSeats()
             };

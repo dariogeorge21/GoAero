@@ -51,7 +51,7 @@ public class OwnerBookingStatsPanel extends JPanel {
         // Summary labels
         totalFlightsLabel = new JLabel("0");
         totalBookingsLabel = new JLabel("0");
-        totalRevenueLabel = new JLabel("$0.00");
+        totalRevenueLabel = new JLabel("₹0.00");
         confirmedBookingsLabel = new JLabel("0");
         pendingBookingsLabel = new JLabel("0");
         cancelledBookingsLabel = new JLabel("0");
@@ -223,7 +223,7 @@ public class OwnerBookingStatsPanel extends JPanel {
         confirmedBookingsLabel.setText(String.valueOf(confirmed));
         pendingBookingsLabel.setText(String.valueOf(pending));
         cancelledBookingsLabel.setText(String.valueOf(cancelled));
-        totalRevenueLabel.setText(String.format("$%.2f", totalRevenue));
+        totalRevenueLabel.setText(String.format("₹%.2f", totalRevenue));
     }
 
     private void updateFlightStatsTable(List<Flight> flights, List<Booking> allBookings) {
@@ -259,7 +259,7 @@ public class OwnerBookingStatsPanel extends JPanel {
                 confirmedBookings,
                 flight.getAvailableSeats(),
                 String.format("%.1f%%", occupancyRate),
-                String.format("$%.2f", flightRevenue)
+                String.format("₹%.2f", flightRevenue)
             };
             tableModel.addRow(row);
         }

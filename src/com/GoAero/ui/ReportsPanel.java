@@ -39,7 +39,7 @@ public class ReportsPanel extends JPanel {
         totalFlightsLabel = new JLabel("0");
         totalAirlinesLabel = new JLabel("0");
         totalBookingsLabel = new JLabel("0");
-        totalRevenueLabel = new JLabel("$0.00");
+        totalRevenueLabel = new JLabel("₹0.00");
         pendingBookingsLabel = new JLabel("0");
         confirmedBookingsLabel = new JLabel("0");
         cancelledBookingsLabel = new JLabel("0");
@@ -234,7 +234,7 @@ public class ReportsPanel extends JPanel {
             confirmedBookingsLabel.setText(String.valueOf(confirmed));
             pendingBookingsLabel.setText(String.valueOf(pending));
             cancelledBookingsLabel.setText(String.valueOf(cancelled));
-            totalRevenueLabel.setText(String.format("$%.2f", totalRevenue));
+            totalRevenueLabel.setText(String.format("₹%.2f", totalRevenue));
 
         } catch (Exception e) {
             showError("Failed to load booking statistics: " + e.getMessage());
