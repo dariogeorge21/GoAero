@@ -27,7 +27,6 @@ public class BookingManagementPanel extends JPanel {
     private static final Color BACKGROUND_GRAY = new Color(250, 250, 250);
     private static final Color CARD_WHITE = Color.WHITE;
     private static final Color DANGER_RED = new Color(244, 67, 54);
-    private static final Color WARNING_ORANGE = new Color(255, 193, 7);
     private JTable bookingsTable;
     private DefaultTableModel tableModel;
     private JButton viewDetailsButton, updateStatusButton, updatePaymentButton, refreshButton;
