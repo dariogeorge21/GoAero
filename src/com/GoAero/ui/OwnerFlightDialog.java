@@ -32,7 +32,6 @@ public class OwnerFlightDialog extends JDialog {
     private static final Color BACKGROUND_GRAY = new Color(250, 250, 250);
     private static final Color CARD_WHITE = Color.WHITE;
     private static final Color DANGER_RED = new Color(244, 67, 54);
-    private static final Color WARNING_ORANGE = new Color(255, 193, 7);
     private Flight flight;
     private FlightDAO flightDAO;
     private AirportDAO airportDAO;
@@ -99,72 +98,12 @@ public class OwnerFlightDialog extends JDialog {
         JPanel headerSection = createHeaderSection();
         mainPanel.add(headerSection, BorderLayout.NORTH);
 
-        // Form panel
-        JPanel formPanel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 10, 8, 10);
-        gbc.anchor = GridBagConstraints.WEST;
-
-        // Flight Code
-        gbc.gridx = 0; gbc.gridy = 0;
-        formPanel.add(new JLabel("Flight Code:"), gbc);
-        gbc.gridx = 1;
-        formPanel.add(flightCodeField, gbc);
-
-        // Flight Name
-        gbc.gridx = 0; gbc.gridy = 1;
-        formPanel.add(new JLabel("Flight Name:"), gbc);
-        gbc.gridx = 1;
-        formPanel.add(flightNameField, gbc);
-
-        // Departure Airport
-        gbc.gridx = 0; gbc.gridy = 2;
-        formPanel.add(new JLabel("Departure Airport:"), gbc);
-        gbc.gridx = 1;
-        formPanel.add(departureAirportComboBox, gbc);
-
-        // Destination Airport
-        gbc.gridx = 0; gbc.gridy = 3;
-        formPanel.add(new JLabel("Destination Airport:"), gbc);
-        gbc.gridx = 1;
-        formPanel.add(destinationAirportComboBox, gbc);
-
-        // Departure Time
-        gbc.gridx = 0; gbc.gridy = 4;
-        formPanel.add(new JLabel("Departure:"), gbc);
-        gbc.gridx = 1;
-        JPanel depTimePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        depTimePanel.add(departureTimeField);
-        depTimePanel.add(new JLabel(" (YYYY-MM-DD HH:MM)"));
-        formPanel.add(depTimePanel, gbc);
-
-        // Destination Time
-        gbc.gridx = 0; gbc.gridy = 5;
-        formPanel.add(new JLabel("Arrival:"), gbc);
-        gbc.gridx = 1;
-        JPanel destTimePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        destTimePanel.add(destinationTimeField);
-        destTimePanel.add(new JLabel(" (YYYY-MM-DD HH:MM)"));
-        formPanel.add(destTimePanel, gbc);
-
-        // Capacity
-        gbc.gridx = 0; gbc.gridy = 6;
-        formPanel.add(new JLabel("Capacity:"), gbc);
-        gbc.gridx = 1;
-        formPanel.add(capacityField, gbc);
-
-        // Price
-        gbc.gridx = 0; gbc.gridy = 7;
-        formPanel.add(new JLabel("Price (₹):"), gbc);
-        gbc.gridx = 1;
-        formPanel.add(priceField, gbc);
-
-        add(formPanel, BorderLayout.CENTER);
+        // Content section with enhanced form
+        JPanel contentSection = createContentSection();
+        mainPanel.add(contentSection, BorderLayout.CENTER);
 
         // Button panel
-        JPanel buttonPanel = new JPanel(new FlowLayout());
-        buttonPanel.add(saveButton);
-        buttonPanel.add(cancelButton);
+        JPanel buttonPanel = createButtonSection();
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
@@ -615,7 +554,6 @@ public class OwnerFlightDialog extends JDialog {
     /**
      * Creates a styled combo box with modern design
      */
-    @SuppressWarnings("unchecked")
     private JComboBox<Airport> createStyledComboBox() {
         JComboBox<Airport> comboBox = new JComboBox<>();
         comboBox.setFont(new Font("Arial", Font.PLAIN, 14));
