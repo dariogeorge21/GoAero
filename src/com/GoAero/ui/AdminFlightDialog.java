@@ -75,7 +75,7 @@ public class AdminFlightDialog extends JDialog {
         flightCodeField = createStyledTextField("Enter flight code (e.g., GA123, AA1234)");
         flightNameField = createStyledTextField("Enter descriptive flight name or route description");
         capacityField = createStyledTextField("Enter passenger capacity (e.g., 180, 350)");
-        priceField = createStyledTextField("Enter ticket price in USD (e.g., 299.99)");
+        priceField = createStyledTextField("Enter ticket price in INR (e.g., 299.99)");
         departureTimeField = createStyledTextField("YYYY-MM-DD HH:MM (e.g., 2024-03-15 14:30)");
         destinationTimeField = createStyledTextField("YYYY-MM-DD HH:MM (e.g., 2024-03-15 18:45)");
         
@@ -907,7 +907,7 @@ public class AdminFlightDialog extends JDialog {
 
         // Price
         gbc.gridx = 0; gbc.gridy = 15;
-        JLabel priceLabel = new JLabel("Ticket Price (USD)");
+        JLabel priceLabel = new JLabel("Ticket Price (INR)");
         priceLabel.setFont(new Font("Arial", Font.BOLD, 14));
         priceLabel.setForeground(DARK_BLUE);
         formPanel.add(priceLabel, gbc);

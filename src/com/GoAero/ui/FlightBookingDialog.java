@@ -79,7 +79,7 @@ public class FlightBookingDialog extends JDialog {
         // Price information with modern styling
         priceLabel = new JLabel(String.format(
             "<html><div style='text-align: center; font-family: Arial;'>" +
-            "<h2 style='color: #4CAF50; margin: 10px 0;'>💰 Total Price: $%.2f</h2>" +
+            "<h2 style='color: #4CAF50; margin: 10px 0;'>💰 Total Price: ₹%.2f</h2>" +
             "</div></html>",
             selectedFlight.getPrice()
         ));
@@ -281,7 +281,7 @@ public class FlightBookingDialog extends JDialog {
             "Flight: %s\n" +
             "Route: %s\n" +
             "Departure: %s\n" +
-            "Amount: $%.2f\n\n" +
+            "Amount: ₹%.2f\n\n" +
             "Please save your PNR for future reference.\n" +
             "You can view your booking details in 'My Bookings'.",
             booking.getPnr(),

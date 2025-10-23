@@ -159,7 +159,7 @@ public class ValidationUtil {
      * @return true if price is valid
      */
     public static boolean isValidPrice(double price) {
-        return price > 0 && price <= 100000; // Max price $100,000
+        return price > 0 && price <= 100000; // Max price ₹100,000
     }
 
     /**

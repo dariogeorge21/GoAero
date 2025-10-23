@@ -393,7 +393,7 @@ public class SearchFlights extends JFrame {
                 flight.getRoute(),
                 flight.getDepartureTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
                 flight.getDestinationTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                "$" + flight.getPrice(),
+                "₹" + flight.getPrice(),
                 flight.getAvailableSeats()
             };
             tableModel.addRow(row);

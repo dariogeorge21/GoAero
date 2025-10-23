@@ -239,7 +239,7 @@ public class BookingDetailsDialog extends JDialog {
         amountLabel.setForeground(DARK_BLUE);
         contentPanel.add(amountLabel);
 
-        JLabel amountValue = new JLabel(String.format("$%.2f USD", booking.getAmount()));
+        JLabel amountValue = new JLabel(String.format("₹%.2f INR", booking.getAmount()));
         amountValue.setFont(new Font("Arial", Font.BOLD, 16));
         amountValue.setForeground(SUCCESS_GREEN);
         contentPanel.add(amountValue);

@@ -172,7 +172,7 @@ public class BookingManagementPanel extends JPanel {
                 booking.getFullRoute() != null ? booking.getFullRoute() : "Route TBD",
                 booking.getDateOfDeparture() != null ? 
                     booking.getDateOfDeparture().format(DateTimeFormatter.ofPattern("MM-dd")) : "TBD",
-                String.format("$%.2f", booking.getAmount()),
+                String.format("₹%.2f", booking.getAmount()),
                 booking.getPaymentStatus().getDisplayName(),
                 booking.getBookingStatus().getDisplayName()
             };
@@ -689,7 +689,7 @@ public class BookingManagementPanel extends JPanel {
                 setHorizontalAlignment(SwingConstants.RIGHT);
                 setFont(new Font("Arial", Font.BOLD, 12));
 
-                String amountText = value.toString().replace("$", "");
+                String amountText = value.toString().replace(" ₹", "");
                 try {
                     double amount = Double.parseDouble(amountText);
                     

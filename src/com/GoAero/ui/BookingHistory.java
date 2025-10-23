@@ -279,7 +279,7 @@ public class BookingHistory extends JFrame {
                 booking.getDateOfDeparture().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
                 booking.getBookingStatus().getDisplayName(),
                 booking.getPaymentStatus().getDisplayName(),
-                String.format("$%.2f", booking.getAmount())
+                String.format("₹%.2f", booking.getAmount())
             };
             tableModel.addRow(row);
         }

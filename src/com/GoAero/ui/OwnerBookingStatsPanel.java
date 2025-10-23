@@ -67,7 +67,7 @@ public class OwnerBookingStatsPanel extends JPanel {
         // Enhanced summary labels with color coding
         totalFlightsLabel = createDataLabel("0", PRIMARY_BLUE);
         totalBookingsLabel = createDataLabel("0", DARK_BLUE);
-        totalRevenueLabel = createDataLabel("$0.00", SUCCESS_GREEN);
+        totalRevenueLabel = createDataLabel("₹0.00", SUCCESS_GREEN);
         confirmedBookingsLabel = createDataLabel("0", SUCCESS_GREEN);
         pendingBookingsLabel = createDataLabel("0", WARNING_ORANGE);
         cancelledBookingsLabel = createDataLabel("0", DANGER_RED);
@@ -200,7 +200,7 @@ public class OwnerBookingStatsPanel extends JPanel {
         confirmedBookingsLabel.setText(String.valueOf(confirmed));
         pendingBookingsLabel.setText(String.valueOf(pending));
         cancelledBookingsLabel.setText(String.valueOf(cancelled));
-        totalRevenueLabel.setText(String.format("$%.2f", totalRevenue));
+        totalRevenueLabel.setText(String.format("₹%.2f", totalRevenue));
     }
 
     private void updateFlightStatsTable(List<Flight> flights, List<Booking> allBookings) {
@@ -245,7 +245,7 @@ public class OwnerBookingStatsPanel extends JPanel {
                 confirmedBookings,
                 availableSeats,
                 String.format("%.1f%%", occupancyPercent),
-                String.format("$%.2f", flightRevenue)
+                String.format("₹%.2f", flightRevenue)
             };
             tableModel.addRow(row);
         }
@@ -605,7 +605,7 @@ public class OwnerBookingStatsPanel extends JPanel {
                 setHorizontalAlignment(SwingConstants.RIGHT);
                 setFont(new Font("Arial", Font.BOLD, 12));
                 
-                String revenueStr = value.toString().replace("$", "").replace(",", "");
+                String revenueStr = value.toString().replace("₹", "").replace(",", "");
                 try {
                     double revenue = Double.parseDouble(revenueStr);
                     

@@ -72,7 +72,7 @@ public class OwnerFlightDialog extends JDialog {
         flightCodeField = createStyledTextField("Enter flight code (e.g., GA123)");
         flightNameField = createStyledTextField("Enter flight name or route description");
         capacityField = createStyledTextField("Enter passenger capacity");
-        priceField = createStyledTextField("Enter ticket price in USD");
+        priceField = createStyledTextField("Enter ticket price in INR");
         departureTimeField = createStyledTextField("YYYY-MM-DD HH:MM");
         destinationTimeField = createStyledTextField("YYYY-MM-DD HH:MM");
         
@@ -155,7 +155,7 @@ public class OwnerFlightDialog extends JDialog {
 
         // Price
         gbc.gridx = 0; gbc.gridy = 7;
-        formPanel.add(new JLabel("Price ($):"), gbc);
+        formPanel.add(new JLabel("Price (₹):"), gbc);
         gbc.gridx = 1;
         formPanel.add(priceField, gbc);
 
@@ -835,7 +835,7 @@ public class OwnerFlightDialog extends JDialog {
 
         // Price
         gbc.gridx = 0; gbc.gridy = 11;
-        JLabel priceLabel = new JLabel("Ticket Price (USD)");
+        JLabel priceLabel = new JLabel("Ticket Price (INR)");
         priceLabel.setFont(new Font("Arial", Font.BOLD, 14));
         priceLabel.setForeground(DARK_BLUE);
         formPanel.add(priceLabel, gbc);

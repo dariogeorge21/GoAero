@@ -173,7 +173,7 @@ public class FlightManagementPanel extends JPanel {
                     flight.getDepartureTime().format(DateTimeFormatter.ofPattern("MM-dd HH:mm")) : "TBD",
                 flight.getDestinationTime() != null ? 
                     flight.getDestinationTime().format(DateTimeFormatter.ofPattern("MM-dd HH:mm")) : "TBD",
-                String.format("$%.2f", flight.getPrice()),
+                String.format("₹%.2f", flight.getPrice()),
                 flight.getCapacity(),
                 flight.getAvailableSeats()
             };
@@ -637,7 +637,7 @@ public class FlightManagementPanel extends JPanel {
                 setHorizontalAlignment(SwingConstants.RIGHT);
                 setFont(new Font("Arial", Font.BOLD, 12));
                 
-                String priceText = value.toString().replace("$", "");
+                String priceText = value.toString().replace(" ₹", "");
                 try {
                     double price = Double.parseDouble(priceText);
                     
