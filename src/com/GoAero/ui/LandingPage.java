@@ -69,36 +69,34 @@ public class LandingPage extends JFrame {
 
         // --- Action Listeners ---
 
-        // Action for the Book Ticket button
+        // Action for the Book Ticket button - Navigate to Passenger tab (index 0)
         bookTicketButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Open the Login screen
-                new LoginScreen().setVisible(true);
+                // Open the Login screen with Passenger tab selected
+                new LoginScreen(0).setVisible(true);
                 // Hide the landing page
                 LandingPage.this.setVisible(false);
             }
         });
 
-        // Action for the Airline Login button
+        // Action for the Airline Login button - Navigate to Airline tab (index 2)
         airlineLoginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Open the Login screen for airline partners
-                LoginScreen loginScreen = new LoginScreen();
-                loginScreen.setVisible(true);
+                // Open the Login screen with Airline tab selected
+                new LoginScreen(2).setVisible(true);
                 // Hide the landing page
                 LandingPage.this.setVisible(false);
             }
         });
 
-        // Mouse listener for the Admin Login label to make it clickable
+        // Mouse listener for the Admin Login label to make it clickable - Navigate to Admin tab (index 1)
         adminLoginLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 // Open the Login screen with Admin tab selected
-                LoginScreen loginScreen = new LoginScreen();
-                loginScreen.setVisible(true);
+                new LoginScreen(1).setVisible(true);
                 // Hide the landing page
                 LandingPage.this.setVisible(false);
             }
