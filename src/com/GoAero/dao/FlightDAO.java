@@ -3,10 +3,8 @@ package com.GoAero.dao;
 import com.GoAero.db.DBConnection;
 import com.GoAero.model.Flight;
 
-import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -4,7 +4,6 @@ import com.GoAero.db.DBConnection;
 import com.GoAero.model.User;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 

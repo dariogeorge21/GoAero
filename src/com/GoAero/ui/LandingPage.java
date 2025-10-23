@@ -13,7 +13,6 @@ public class LandingPage extends JFrame {
     // Professional color scheme
     private static final Color PRIMARY_BLUE = new Color(25, 118, 210);
     private static final Color ACCENT_ORANGE = new Color(255, 152, 0);
-    private static final Color DARK_BLUE = new Color(13, 71, 161);
     private static final Color LIGHT_GRAY = new Color(245, 245, 245);
     private static final Color HOVER_BLUE = new Color(30, 136, 229);
 
