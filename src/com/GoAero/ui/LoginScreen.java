@@ -167,37 +167,6 @@ public class LoginScreen extends JFrame {
         return field;
     }
 
-    private JPasswordField createStyledPasswordField(int columns) {
-        JPasswordField field = new JPasswordField(columns);
-        field.setFont(new Font("Arial", Font.PLAIN, 14));
-        field.setPreferredSize(new Dimension(250, 45));
-        field.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(LIGHT_GRAY, 2),
-            BorderFactory.createEmptyBorder(8, 15, 8, 15)
-        ));
-        
-        // Add focus effects
-        field.addFocusListener(new java.awt.event.FocusAdapter() {
-            @Override
-            public void focusGained(java.awt.event.FocusEvent e) {
-                field.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(PRIMARY_BLUE, 2),
-                    BorderFactory.createEmptyBorder(8, 15, 8, 15)
-                ));
-            }
-            
-            @Override
-            public void focusLost(java.awt.event.FocusEvent e) {
-                Color borderColor = field.getPassword().length == 0 ? LIGHT_GRAY : new Color(200, 200, 200);
-                field.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(borderColor, 2),
-                    BorderFactory.createEmptyBorder(8, 15, 8, 15)
-                ));
-            }
-        });
-        
-        return field;
-    }
 
     private JTextField createStyledTextFieldWithPlaceholder(int columns, String placeholder) {
         JTextField field = new JTextField(columns);
