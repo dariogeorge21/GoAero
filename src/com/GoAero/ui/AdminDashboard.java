@@ -14,12 +14,8 @@ import java.awt.event.MouseEvent;
  */
 public class AdminDashboard extends JFrame {
     // Professional color scheme (consistent with other pages)
-    private static final Color PRIMARY_BLUE = new Color(25, 118, 210);
-    private static final Color ACCENT_ORANGE = new Color(255, 152, 0);
     private static final Color DARK_BLUE = new Color(13, 71, 161);
     private static final Color LIGHT_GRAY = new Color(245, 245, 245);
-    private static final Color HOVER_BLUE = new Color(30, 136, 229);
-    private static final Color SUCCESS_GREEN = new Color(76, 175, 80);
     private static final Color BACKGROUND_GRAY = new Color(250, 250, 250);
     private static final Color CARD_WHITE = Color.WHITE;
     private static final Color DANGER_RED = new Color(244, 67, 54);
