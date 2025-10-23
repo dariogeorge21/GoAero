@@ -13,22 +13,22 @@ import java.util.List;
 public class FlightOwnerDAO implements BaseDAO<FlightOwner, Integer> {
 
     private static final String INSERT_FLIGHT_OWNER = 
-        "INSERT INTO flight_owners (company_name, company_code, contact_info, flight_count, password_hash) VALUES (?, ?, ?, ?, ?)";
+        "INSERT INTO flight_owners (company_name, company_code, contact_info, flight_count, password) VALUES (?, ?, ?, ?, ?)";
     
     private static final String SELECT_FLIGHT_OWNER_BY_ID = 
-        "SELECT owner_id, company_name, company_code, contact_info, flight_count, password_hash, created_at, updated_at FROM flight_owners WHERE owner_id = ?";
+        "SELECT owner_id, company_name, company_code, contact_info, flight_count, password, created_at, updated_at FROM flight_owners WHERE owner_id = ?";
     
     private static final String SELECT_ALL_FLIGHT_OWNERS = 
-        "SELECT owner_id, company_name, company_code, contact_info, flight_count, password_hash, created_at, updated_at FROM flight_owners ORDER BY company_name";
+        "SELECT owner_id, company_name, company_code, contact_info, flight_count, password, created_at, updated_at FROM flight_owners ORDER BY company_name";
     
     private static final String UPDATE_FLIGHT_OWNER = 
-        "UPDATE flight_owners SET company_name = ?, company_code = ?, contact_info = ?, flight_count = ?, password_hash = ? WHERE owner_id = ?";
+        "UPDATE flight_owners SET company_name = ?, company_code = ?, contact_info = ?, flight_count = ?, password = ? WHERE owner_id = ?";
     
     private static final String DELETE_FLIGHT_OWNER = 
         "DELETE FROM flight_owners WHERE owner_id = ?";
     
     private static final String SELECT_FLIGHT_OWNER_BY_CODE = 
-        "SELECT owner_id, company_name, company_code, contact_info, flight_count, password_hash, created_at, updated_at FROM flight_owners WHERE company_code = ?";
+        "SELECT owner_id, company_name, company_code, contact_info, flight_count, password, created_at, updated_at FROM flight_owners WHERE company_code = ?";
     
     private static final String COUNT_FLIGHT_OWNERS = 
         "SELECT COUNT(*) FROM flight_owners";
@@ -236,12 +236,12 @@ public class FlightOwnerDAO implements BaseDAO<FlightOwner, Integer> {
         List<FlightOwner> flightOwners = new ArrayList<>();
         
         String query = "SELECT fo.owner_id, fo.company_name, fo.company_code, fo.contact_info, " +
-                      "fo.password_hash, fo.created_at, fo.updated_at, " +
+                      "fo.password, fo.created_at, fo.updated_at, " +
                       "COALESCE(COUNT(fd.flight_id), 0) as flight_count " +
                       "FROM flight_owners fo " +
                       "LEFT JOIN flight_data fd ON fo.owner_id = fd.company_id " +
                       "GROUP BY fo.owner_id, fo.company_name, fo.company_code, fo.contact_info, " +
-                      "fo.password_hash, fo.created_at, fo.updated_at " +
+                      "fo.password, fo.created_at, fo.updated_at " +
                       "ORDER BY fo.company_name";
         
         try (Connection conn = DBConnection.getConnection();
@@ -254,7 +254,7 @@ public class FlightOwnerDAO implements BaseDAO<FlightOwner, Integer> {
                 flightOwner.setCompanyName(rs.getString("company_name"));
                 flightOwner.setCompanyCode(rs.getString("company_code"));
                 flightOwner.setContactInfo(rs.getString("contact_info"));
-                flightOwner.setPasswordHash(rs.getString("password_hash"));
+                flightOwner.setPasswordHash(rs.getString("password"));
                 flightOwner.setFlightCount(rs.getInt("flight_count"));
                 flightOwner.setCreatedAt(rs.getTimestamp("created_at"));
                 flightOwner.setUpdatedAt(rs.getTimestamp("updated_at"));
@@ -281,7 +281,7 @@ public class FlightOwnerDAO implements BaseDAO<FlightOwner, Integer> {
         flightOwner.setCompanyCode(rs.getString("company_code"));
         flightOwner.setContactInfo(rs.getString("contact_info"));
         flightOwner.setFlightCount(rs.getInt("flight_count"));
-        flightOwner.setPasswordHash(rs.getString("password_hash"));
+        flightOwner.setPasswordHash(rs.getString("password"));
         flightOwner.setCreatedAt(rs.getTimestamp("created_at"));
         flightOwner.setUpdatedAt(rs.getTimestamp("updated_at"));
         
