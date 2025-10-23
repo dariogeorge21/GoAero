@@ -39,13 +39,13 @@ public class FlightBookingDialog extends JDialog {
     }
 
     private void initializeComponents() {
-        setSize(500, 400);
+        setSize(600, 500);
         setLocationRelativeTo(getParent());
-        setResizable(false);
+        setResizable(true);
 
         // Flight information
         String flightInfo = String.format(
-            "<html><h3>Flight Details</h3>" +
+            "<html><h3>Flight Information</h3>" +
             "<b>Flight:</b> %s (%s)<br>" +
             "<b>Airline:</b> %s<br>" +
             "<b>Route:</b> %s<br>" +
@@ -63,7 +63,7 @@ public class FlightBookingDialog extends JDialog {
         flightInfoLabel = new JLabel(flightInfo);
 
         // Price information
-        priceLabel = new JLabel(String.format("<html><h3>Total Price: $%.2f</h3></html>", selectedFlight.getPrice()));
+        priceLabel = new JLabel(String.format("<html><h3>Total Price: ₹%.2f</h3></html>", selectedFlight.getPrice()));
         priceLabel.setForeground(new Color(0, 128, 0));
 
         // Passenger information
@@ -126,10 +126,16 @@ public class FlightBookingDialog extends JDialog {
         termsLabel.setHorizontalAlignment(SwingConstants.CENTER);
         contentPanel.add(termsLabel);
 
-        add(contentPanel, BorderLayout.CENTER);
+        // Add scroll pane for the content
+        JScrollPane scrollPane = new JScrollPane(contentPanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        add(scrollPane, BorderLayout.CENTER);
 
         // Button panel
         JPanel buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
         buttonPanel.add(confirmBookingButton);
         buttonPanel.add(cancelButton);
         add(buttonPanel, BorderLayout.SOUTH);
@@ -197,7 +203,7 @@ public class FlightBookingDialog extends JDialog {
             "Flight: %s\n" +
             "Route: %s\n" +
             "Departure: %s\n" +
-            "Amount: $%.2f\n\n" +
+            "Amount: ₹%.2f\n\n" +
             "Please save your PNR for future reference.\n" +
             "You can view your booking details in 'My Bookings'.",
             booking.getPnr(),

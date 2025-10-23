@@ -22,11 +22,13 @@ public class BookingDetailsDialog extends JDialog {
     }
 
     private void initializeComponents() {
-        setSize(500, 600);
+        setSize(600, 700);
         setLocationRelativeTo(getParent());
-        setResizable(false);
+        setResizable(true);
 
         closeButton = new JButton("Close");
+        closeButton.setPreferredSize(new Dimension(100, 35));
+        closeButton.setFont(new Font("Arial", Font.BOLD, 12));
     }
 
     private void setupLayout() {
@@ -63,7 +65,12 @@ public class BookingDetailsDialog extends JDialog {
         JPanel statusInfoPanel = createStatusInfoPanel();
         contentPanel.add(statusInfoPanel);
 
-        add(contentPanel, BorderLayout.CENTER);
+        // Add scroll pane for the content
+        JScrollPane scrollPane = new JScrollPane(contentPanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        add(scrollPane, BorderLayout.CENTER);
 
         // Button panel
         JPanel buttonPanel = new JPanel(new FlowLayout());
@@ -97,7 +104,7 @@ public class BookingDetailsDialog extends JDialog {
         gbc.gridx = 0; gbc.gridy = 2;
         panel.add(new JLabel("Total Amount:"), gbc);
         gbc.gridx = 1;
-        JLabel amountLabel = new JLabel(String.format("$%.2f", booking.getAmount()));
+        JLabel amountLabel = new JLabel(String.format("₹%.2f", booking.getAmount()));
         amountLabel.setFont(new Font("Arial", Font.BOLD, 14));
         amountLabel.setForeground(new Color(0, 128, 0));
         panel.add(amountLabel, gbc);

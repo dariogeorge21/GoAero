@@ -37,7 +37,7 @@ public class UserProfileDialog extends JDialog {
     }
 
     private void initializeComponents() {
-        setSize(450, 500);
+        setSize(650, 700);
         setLocationRelativeTo(getParent());
         setResizable(false);
 
@@ -188,10 +188,10 @@ public class UserProfileDialog extends JDialog {
         
         if (isPasswordChangeMode) {
             changePasswordButton.setText("Cancel Password Change");
-            setSize(450, 650);
+            setSize(650, 700);
         } else {
             changePasswordButton.setText("Change Password");
-            setSize(450, 500);
+            setSize(650, 700);
             clearPasswordFields();
         }
         

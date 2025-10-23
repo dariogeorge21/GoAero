@@ -50,105 +50,154 @@ public class OwnerFlightDialog extends JDialog {
     }
 
     private void initializeComponents() {
-        setSize(500, 550);
+        setSize(950, 750);
         setLocationRelativeTo(getParent());
         setResizable(false);
 
-        flightCodeField = new JTextField(20);
-        flightNameField = new JTextField(20);
-        capacityField = new JTextField(20);
-        priceField = new JTextField(20);
-        departureTimeField = new JTextField(20);
-        destinationTimeField = new JTextField(20);
+        // Initialize text fields with proper sizing and padding
+        flightCodeField = new JTextField(25);
+        flightCodeField.setPreferredSize(new Dimension(250, 30));
+        flightNameField = new JTextField(25);
+        flightNameField.setPreferredSize(new Dimension(250, 30));
+        capacityField = new JTextField(25);
+        capacityField.setPreferredSize(new Dimension(250, 30));
+        priceField = new JTextField(25);
+        priceField.setPreferredSize(new Dimension(250, 30));
+        departureTimeField = new JTextField(25);
+        departureTimeField.setPreferredSize(new Dimension(200, 30));
+        destinationTimeField = new JTextField(25);
+        destinationTimeField.setPreferredSize(new Dimension(200, 30));
         
+        // Initialize combo boxes with proper sizing and custom renderers
         departureAirportComboBox = new JComboBox<>();
+        departureAirportComboBox.setPreferredSize(new Dimension(250, 30));
+        departureAirportComboBox.setRenderer(new AirportRenderer());
         destinationAirportComboBox = new JComboBox<>();
+        destinationAirportComboBox.setPreferredSize(new Dimension(250, 30));
+        destinationAirportComboBox.setRenderer(new AirportRenderer());
         
+        // Initialize buttons with proper sizing and styling
         saveButton = new JButton(isEditMode ? "Update Flight" : "Create Flight");
+        saveButton.setPreferredSize(new Dimension(140, 35));
+        saveButton.setFont(new Font("Arial", Font.BOLD, 12));
         cancelButton = new JButton("Cancel");
+        cancelButton.setPreferredSize(new Dimension(100, 35));
+        cancelButton.setFont(new Font("Arial", Font.PLAIN, 12));
     }
 
     private void setupLayout() {
         setLayout(new BorderLayout());
 
+        // Title and company info panel with proper padding
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
+        
         // Title panel
         JPanel titlePanel = new JPanel();
         JLabel titleLabel = new JLabel(isEditMode ? "Edit Flight" : "Add New Flight");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         titlePanel.add(titleLabel);
-        add(titlePanel, BorderLayout.NORTH);
+        headerPanel.add(titlePanel, BorderLayout.NORTH);
 
-        // Company info panel
+        // Company info panel with spacing
         JPanel companyPanel = new JPanel();
+        companyPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
         JLabel companyLabel = new JLabel("Airline: " + currentOwner.getDisplayName());
         companyLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        companyLabel.setForeground(new Color(0, 102, 204));
         companyPanel.add(companyLabel);
-        add(companyPanel, BorderLayout.NORTH);
+        headerPanel.add(companyPanel, BorderLayout.SOUTH);
+        
+        add(headerPanel, BorderLayout.NORTH);
 
-        // Form panel
+        // Form panel with proper spacing
         JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBorder(BorderFactory.createEmptyBorder(10, 40, 10, 40));
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 10, 8, 10);
+        gbc.insets = new Insets(12, 15, 12, 15);
         gbc.anchor = GridBagConstraints.WEST;
 
         // Flight Code
         gbc.gridx = 0; gbc.gridy = 0;
-        formPanel.add(new JLabel("Flight Code:"), gbc);
+        JLabel flightCodeLabel = new JLabel("Flight Code:");
+        flightCodeLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        formPanel.add(flightCodeLabel, gbc);
         gbc.gridx = 1;
         formPanel.add(flightCodeField, gbc);
 
         // Flight Name
         gbc.gridx = 0; gbc.gridy = 1;
-        formPanel.add(new JLabel("Flight Name:"), gbc);
+        JLabel flightNameLabel = new JLabel("Flight Name:");
+        flightNameLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        formPanel.add(flightNameLabel, gbc);
         gbc.gridx = 1;
         formPanel.add(flightNameField, gbc);
 
         // Departure Airport
         gbc.gridx = 0; gbc.gridy = 2;
-        formPanel.add(new JLabel("Departure Airport:"), gbc);
+        JLabel depAirportLabel = new JLabel("Departure Airport:");
+        depAirportLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        formPanel.add(depAirportLabel, gbc);
         gbc.gridx = 1;
         formPanel.add(departureAirportComboBox, gbc);
 
         // Destination Airport
         gbc.gridx = 0; gbc.gridy = 3;
-        formPanel.add(new JLabel("Destination Airport:"), gbc);
+        JLabel destAirportLabel = new JLabel("Destination Airport:");
+        destAirportLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        formPanel.add(destAirportLabel, gbc);
         gbc.gridx = 1;
         formPanel.add(destinationAirportComboBox, gbc);
 
         // Departure Time
         gbc.gridx = 0; gbc.gridy = 4;
-        formPanel.add(new JLabel("Departure Time:"), gbc);
+        JLabel depTimeLabel = new JLabel("Departure Time:");
+        depTimeLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        formPanel.add(depTimeLabel, gbc);
         gbc.gridx = 1;
         JPanel depTimePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         depTimePanel.add(departureTimeField);
-        depTimePanel.add(new JLabel(" (YYYY-MM-DD HH:MM)"));
+        JLabel depTimeFormat = new JLabel("  (YYYY-MM-DD HH:MM)");
+        depTimeFormat.setFont(new Font("Arial", Font.ITALIC, 10));
+        depTimeFormat.setForeground(Color.GRAY);
+        depTimePanel.add(depTimeFormat);
         formPanel.add(depTimePanel, gbc);
 
-        // Destination Time
+        // Arrival Time
         gbc.gridx = 0; gbc.gridy = 5;
-        formPanel.add(new JLabel("Arrival Time:"), gbc);
+        JLabel arrTimeLabel = new JLabel("Arrival Time:");
+        arrTimeLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        formPanel.add(arrTimeLabel, gbc);
         gbc.gridx = 1;
         JPanel destTimePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         destTimePanel.add(destinationTimeField);
-        destTimePanel.add(new JLabel(" (YYYY-MM-DD HH:MM)"));
+        JLabel destTimeFormat = new JLabel("  (YYYY-MM-DD HH:MM)");
+        destTimeFormat.setFont(new Font("Arial", Font.ITALIC, 10));
+        destTimeFormat.setForeground(Color.GRAY);
+        destTimePanel.add(destTimeFormat);
         formPanel.add(destTimePanel, gbc);
 
         // Capacity
         gbc.gridx = 0; gbc.gridy = 6;
-        formPanel.add(new JLabel("Capacity:"), gbc);
+        JLabel capacityLabel = new JLabel("Capacity:");
+        capacityLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        formPanel.add(capacityLabel, gbc);
         gbc.gridx = 1;
         formPanel.add(capacityField, gbc);
 
         // Price
         gbc.gridx = 0; gbc.gridy = 7;
-        formPanel.add(new JLabel("Price ($):"), gbc);
+        JLabel priceLabel = new JLabel("Price (₹):");
+        priceLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        formPanel.add(priceLabel, gbc);
         gbc.gridx = 1;
         formPanel.add(priceField, gbc);
 
         add(formPanel, BorderLayout.CENTER);
 
-        // Button panel
-        JPanel buttonPanel = new JPanel(new FlowLayout());
+        // Button panel with proper spacing
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20));
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
         buttonPanel.add(saveButton);
         buttonPanel.add(cancelButton);
         add(buttonPanel, BorderLayout.SOUTH);
@@ -376,5 +425,21 @@ public class OwnerFlightDialog extends JDialog {
 
     private void showSuccess(String message) {
         JOptionPane.showMessageDialog(this, message, "Success", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    // Custom renderer for Airport combo box
+    private static class AirportRenderer extends DefaultListCellRenderer {
+        @Override
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index,
+                boolean isSelected, boolean cellHasFocus) {
+            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            
+            if (value instanceof Airport) {
+                Airport airport = (Airport) value;
+                setText(airport.getAirportCode() + " - " + airport.getAirportName() + " (" + airport.getCity() + ")");
+            }
+            
+            return this;
+        }
     }
 }
