@@ -40,10 +40,19 @@ public class LoginScreen extends JFrame {
     private FlightOwnerDAO flightOwnerDAO;
 
     public LoginScreen() {
+        this(0); // Default to passenger tab
+    }
+
+    public LoginScreen(int initialTabIndex) {
         initializeDAOs();
         initializeComponents();
         setupLayout();
         setupEventListeners();
+
+        // Set the initial tab if valid
+        if (initialTabIndex >= 0 && initialTabIndex < tabbedPane.getTabCount()) {
+            tabbedPane.setSelectedIndex(initialTabIndex);
+        }
     }
 
     private void initializeDAOs() {
