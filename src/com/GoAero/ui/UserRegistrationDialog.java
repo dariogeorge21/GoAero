@@ -8,8 +8,6 @@ import com.GoAero.util.ValidationUtil;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.LocalDate;
@@ -21,9 +19,11 @@ import java.time.format.DateTimeParseException;
 public class UserRegistrationDialog extends JDialog {
     // Professional color scheme (consistent with other GoAero pages)
     private static final Color PRIMARY_BLUE = new Color(25, 118, 210);
+    @SuppressWarnings("unused")
     private static final Color ACCENT_ORANGE = new Color(255, 152, 0);
     private static final Color DARK_BLUE = new Color(13, 71, 161);
     private static final Color LIGHT_GRAY = new Color(245, 245, 245);
+    @SuppressWarnings("unused")
     private static final Color HOVER_BLUE = new Color(30, 136, 229);
     private static final Color SUCCESS_GREEN = new Color(76, 175, 80);
     private static final Color BACKGROUND_GRAY = new Color(250, 250, 250);
@@ -394,6 +394,7 @@ public class UserRegistrationDialog extends JDialog {
         dialog.setVisible(true);
     }
 
+    @SuppressWarnings("unused")
     private JTextField createStyledTextField() {
         JTextField field = new JTextField(20);
         field.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -456,6 +457,7 @@ public class UserRegistrationDialog extends JDialog {
         return field;
     }
 
+    @SuppressWarnings("unused")
     private JPasswordField createStyledPasswordField() {
         JPasswordField field = new JPasswordField(20);
         field.setFont(new Font("Arial", Font.PLAIN, 14));
