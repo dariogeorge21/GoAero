@@ -17,6 +17,11 @@ import java.awt.event.MouseEvent;
 
 /**
  * Unified login screen for Users, Admins, and Flight Owners with modern UI design
+ *
+ * Tab indices:
+ * - 0: Passenger Login (👤 Passenger)
+ * - 1: Admin Login (⚙ Admin)
+ * - 2: Airline Login (✈ Airline)
  */
 public class LoginScreen extends JFrame {
     // Professional color scheme (consistent with other pages)
