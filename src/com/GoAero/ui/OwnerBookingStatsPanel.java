@@ -206,6 +206,11 @@ public class OwnerBookingStatsPanel extends JPanel {
     private void updateFlightStatsTable(List<Flight> flights, List<Booking> allBookings) {
         // Clear existing data
         tableModel.setRowCount(0);
+        
+        if (flights == null || allBookings == null) {
+            showError("Failed to retrieve flight or booking data.");
+            return;
+        }
 
         // Group bookings by flight ID
         Map<Integer, List<Booking>> bookingsByFlight = allBookings.stream()
