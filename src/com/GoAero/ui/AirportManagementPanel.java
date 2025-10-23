@@ -146,7 +146,7 @@ public class AirportManagementPanel extends JPanel {
             displayAirports(airports);
             updateInfoPanel();
         } catch (Exception e) {
-            showError("Failed to load airports: " + e.getMessage());
+            System.out.println("Failed to load airports: " + e.getMessage());
         }
     }
 

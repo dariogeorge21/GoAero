@@ -208,7 +208,7 @@ public class ReportsPanel extends JPanel {
             loadBookingStatistics();
             
         } catch (Exception e) {
-            showError("Failed to load reports: " + e.getMessage());
+            System.out.println("Failed to load reports: " + e.getMessage());
         }
     }
 
@@ -244,7 +244,7 @@ public class ReportsPanel extends JPanel {
             totalRevenueLabel.setText(String.format("$%.2f", totalRevenue));
 
         } catch (Exception e) {
-            showError("Failed to load booking statistics: " + e.getMessage());
+            System.out.println("Failed to load booking statistics: " + e.getMessage());
         }
     }
 

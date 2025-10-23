@@ -257,7 +257,7 @@ public class BookingHistory extends JFrame {
             userBookings = bookingDAO.findByUserId(currentUser.getUserId());
             displayBookings();
         } catch (Exception e) {
-            showError("Failed to load bookings: " + e.getMessage());
+            System.out.println("Failed to load bookings: " + e.getMessage());
         }
     }
 

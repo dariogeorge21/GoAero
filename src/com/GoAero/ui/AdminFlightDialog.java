@@ -146,7 +146,7 @@ public class AdminFlightDialog extends JDialog {
             // Setup custom renderers for better display
             setupComboBoxRenderers();
         } catch (Exception e) {
-            showError("Failed to load data: " + e.getMessage());
+            System.out.println("Failed to load data: " + e.getMessage());
         }
     }
     

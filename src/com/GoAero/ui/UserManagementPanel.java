@@ -145,7 +145,7 @@ public class UserManagementPanel extends JPanel {
             displayUsers(users);
             updateInfoPanel();
         } catch (Exception e) {
-            showError("Failed to load users: " + e.getMessage());
+            System.out.println("Failed to load users: " + e.getMessage());
         }
     }
 

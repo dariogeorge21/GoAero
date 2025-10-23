@@ -169,7 +169,7 @@ public class OwnerBookingStatsPanel extends JPanel {
             updateFlightStatsTable(flights, ownerBookings);
             
         } catch (Exception e) {
-            showError("Failed to load statistics: " + e.getMessage());
+            System.out.println("Failed to load statistics: " + e.getMessage());
         }
     }
 

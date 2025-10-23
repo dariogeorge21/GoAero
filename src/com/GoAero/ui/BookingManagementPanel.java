@@ -155,7 +155,7 @@ public class BookingManagementPanel extends JPanel {
             displayBookings(bookings);
             updateInfoPanel();
         } catch (Exception e) {
-            showError("Failed to load bookings: " + e.getMessage());
+            System.out.println("Failed to load bookings: " + e.getMessage());
         }
     }
 

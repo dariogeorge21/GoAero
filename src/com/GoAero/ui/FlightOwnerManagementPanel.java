@@ -146,7 +146,7 @@ public class FlightOwnerManagementPanel extends JPanel {
             displayFlightOwners(flightOwners);
             updateInfoPanel();
         } catch (Exception e) {
-            showError("Failed to load flight owners: " + e.getMessage());
+            System.out.println("Failed to load flight owners: " + e.getMessage());
         }
     }
 

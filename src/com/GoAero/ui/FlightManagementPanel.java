@@ -155,7 +155,7 @@ public class FlightManagementPanel extends JPanel {
             displayFlights(flights);
             updateInfoPanel();
         } catch (Exception e) {
-            showError("Failed to load flights: " + e.getMessage());
+            System.out.println("Failed to load flights: " + e.getMessage());
         }
     }
 
