@@ -35,7 +35,7 @@ public class AdminAirportDialog extends JDialog {
     }
 
     private void initializeComponents() {
-        setSize(400, 300);
+        setSize(500, 400);
         setLocationRelativeTo(getParent());
         setResizable(false);
 
