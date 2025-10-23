@@ -375,16 +375,6 @@ public class AdminDashboard extends JFrame {
         // Auto-close timer and manual button
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         btnPanel.setOpaque(false);
-        JButton okBtn = createStyledButton("OK", SUCCESS_GREEN, Color.WHITE, 14);
-        okBtn.setPreferredSize(new Dimension(80, 36));
-        okBtn.addActionListener(e -> {
-            successDialog.dispose();
-            SwingUtilities.invokeLater(() -> {
-                new LandingPage().setVisible(true);
-                dispose();
-            });
-        });
-        btnPanel.add(okBtn);
         content.add(btnPanel, BorderLayout.SOUTH);
 
         successDialog.setContentPane(content);
@@ -393,7 +383,7 @@ public class AdminDashboard extends JFrame {
         successDialog.setLocationRelativeTo(this);
 
         // Auto-close timer (3 seconds)
-        Timer autoCloseTimer = new Timer(3000, e -> {
+        Timer autoCloseTimer = new Timer(2000, e -> {
             successDialog.dispose();
             SwingUtilities.invokeLater(() -> {
                 new LandingPage().setVisible(true);
