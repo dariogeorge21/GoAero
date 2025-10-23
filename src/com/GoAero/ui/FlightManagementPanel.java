@@ -10,7 +10,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -28,7 +27,6 @@ public class FlightManagementPanel extends JPanel {
     private static final Color BACKGROUND_GRAY = new Color(250, 250, 250);
     private static final Color CARD_WHITE = Color.WHITE;
     private static final Color DANGER_RED = new Color(244, 67, 54);
-    private static final Color WARNING_ORANGE = new Color(255, 193, 7);
     private JTable flightsTable;
     private DefaultTableModel tableModel;
     private JButton addFlightButton, editFlightButton, deleteFlightButton, refreshButton;
