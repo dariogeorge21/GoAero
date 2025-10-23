@@ -66,9 +66,10 @@ public class AdminFlightDialog extends JDialog {
     }
 
     private void initializeComponents() {
-        setSize(750, 800);
+        setSize(800, 850);
         setLocationRelativeTo(getParent());
-        setResizable(false);
+        setResizable(true);
+        setMinimumSize(new Dimension(750, 600));
 
         // Create enhanced styled form fields with improved placeholders
         flightCodeField = createStyledTextField("Enter flight code (e.g., GA123, AA1234)");
@@ -102,14 +103,28 @@ public class AdminFlightDialog extends JDialog {
         JPanel headerSection = createHeaderSection();
         mainPanel.add(headerSection, BorderLayout.NORTH);
 
+        // Create scrollable content area
+        JPanel scrollableContent = new JPanel(new BorderLayout());
+        scrollableContent.setBackground(BACKGROUND_GRAY);
+        
         // Content section with form
         JPanel contentSection = createContentSection();
-        mainPanel.add(contentSection, BorderLayout.CENTER);
+        scrollableContent.add(contentSection, BorderLayout.CENTER);
 
         // Button section
         JPanel buttonSection = createButtonSection();
-        mainPanel.add(buttonSection, BorderLayout.SOUTH);
+        scrollableContent.add(buttonSection, BorderLayout.SOUTH);
 
+        // Wrap in scroll pane
+        JScrollPane scrollPane = new JScrollPane(scrollableContent);
+        scrollPane.setBorder(null);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        scrollPane.setBackground(BACKGROUND_GRAY);
+        scrollPane.getViewport().setBackground(BACKGROUND_GRAY);
+        
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
         add(mainPanel, BorderLayout.CENTER);
     }
 
@@ -733,14 +748,14 @@ public class AdminFlightDialog extends JDialog {
         contentPanel.setBackground(CARD_WHITE);
         contentPanel.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(LIGHT_GRAY, 1),
-            new EmptyBorder(25, 25, 25, 25)
+            new EmptyBorder(35, 35, 35, 35)
         ));
 
-        // Form panel with enhanced layout
+        // Form panel with enhanced layout and spacing
         JPanel formPanel = new JPanel(new GridBagLayout());
         formPanel.setBackground(CARD_WHITE);
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(15, 10, 15, 10);
+        gbc.insets = new Insets(18, 15, 18, 15);
         gbc.anchor = GridBagConstraints.WEST;
 
         // Flight Details Section
@@ -748,7 +763,7 @@ public class AdminFlightDialog extends JDialog {
         JLabel flightDetailsLabel = new JLabel("✈ Flight Details");
         flightDetailsLabel.setFont(new Font("Arial", Font.BOLD, 16));
         flightDetailsLabel.setForeground(DARK_BLUE);
-        flightDetailsLabel.setBorder(new EmptyBorder(0, 0, 10, 0));
+        flightDetailsLabel.setBorder(new EmptyBorder(0, 0, 15, 0));
         formPanel.add(flightDetailsLabel, gbc);
 
         // Flight Code
@@ -781,16 +796,23 @@ public class AdminFlightDialog extends JDialog {
         gbc.gridx = 1;
         formPanel.add(companyComboBox, gbc);
 
-        // Route Information Section
+        // Add spacing before next section
         gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2;
+        JPanel spacer1 = new JPanel();
+        spacer1.setBackground(CARD_WHITE);
+        spacer1.setPreferredSize(new Dimension(0, 25));
+        formPanel.add(spacer1, gbc);
+
+        // Route Information Section
+        gbc.gridy = 5; gbc.gridwidth = 2;
         JLabel routeLabel = new JLabel("🗺 Route Information");
         routeLabel.setFont(new Font("Arial", Font.BOLD, 16));
         routeLabel.setForeground(DARK_BLUE);
-        routeLabel.setBorder(new EmptyBorder(20, 0, 10, 0));
+        routeLabel.setBorder(new EmptyBorder(0, 0, 15, 0));
         formPanel.add(routeLabel, gbc);
 
         // Departure Airport
-        gbc.gridy = 5; gbc.gridwidth = 1;
+        gbc.gridy = 6; gbc.gridwidth = 1;
         JLabel depAirportLabel = new JLabel("Departure Airport");
         depAirportLabel.setFont(new Font("Arial", Font.BOLD, 14));
         depAirportLabel.setForeground(DARK_BLUE);
@@ -800,7 +822,7 @@ public class AdminFlightDialog extends JDialog {
         formPanel.add(departureAirportComboBox, gbc);
 
         // Destination Airport
-        gbc.gridx = 0; gbc.gridy = 6;
+        gbc.gridx = 0; gbc.gridy = 7;
         JLabel destAirportLabel = new JLabel("Destination Airport");
         destAirportLabel.setFont(new Font("Arial", Font.BOLD, 14));
         destAirportLabel.setForeground(DARK_BLUE);
@@ -809,16 +831,23 @@ public class AdminFlightDialog extends JDialog {
         gbc.gridx = 1;
         formPanel.add(destinationAirportComboBox, gbc);
 
+        // Add spacing before next section
+        gbc.gridx = 0; gbc.gridy = 8; gbc.gridwidth = 2;
+        JPanel spacer2 = new JPanel();
+        spacer2.setBackground(CARD_WHITE);
+        spacer2.setPreferredSize(new Dimension(0, 25));
+        formPanel.add(spacer2, gbc);
+
         // Schedule Section
-        gbc.gridx = 0; gbc.gridy = 7; gbc.gridwidth = 2;
+        gbc.gridy = 9; gbc.gridwidth = 2;
         JLabel scheduleLabel = new JLabel("⏰ Schedule");
         scheduleLabel.setFont(new Font("Arial", Font.BOLD, 16));
         scheduleLabel.setForeground(DARK_BLUE);
-        scheduleLabel.setBorder(new EmptyBorder(20, 0, 10, 0));
+        scheduleLabel.setBorder(new EmptyBorder(0, 0, 15, 0));
         formPanel.add(scheduleLabel, gbc);
 
         // Departure Time
-        gbc.gridy = 8; gbc.gridwidth = 1;
+        gbc.gridy = 10; gbc.gridwidth = 1;
         JLabel depTimeLabel = new JLabel("Departure Time");
         depTimeLabel.setFont(new Font("Arial", Font.BOLD, 14));
         depTimeLabel.setForeground(DARK_BLUE);
@@ -835,7 +864,7 @@ public class AdminFlightDialog extends JDialog {
         formPanel.add(depTimePanel, gbc);
 
         // Arrival Time
-        gbc.gridx = 0; gbc.gridy = 9;
+        gbc.gridx = 0; gbc.gridy = 11;
         JLabel arrTimeLabel = new JLabel("Arrival Time");
         arrTimeLabel.setFont(new Font("Arial", Font.BOLD, 14));
         arrTimeLabel.setForeground(DARK_BLUE);
@@ -851,16 +880,23 @@ public class AdminFlightDialog extends JDialog {
         arrTimePanel.add(arrTimeHint);
         formPanel.add(arrTimePanel, gbc);
 
+        // Add spacing before next section
+        gbc.gridx = 0; gbc.gridy = 12; gbc.gridwidth = 2;
+        JPanel spacer3 = new JPanel();
+        spacer3.setBackground(CARD_WHITE);
+        spacer3.setPreferredSize(new Dimension(0, 25));
+        formPanel.add(spacer3, gbc);
+
         // Pricing & Capacity Section
-        gbc.gridx = 0; gbc.gridy = 10; gbc.gridwidth = 2;
+        gbc.gridy = 13; gbc.gridwidth = 2;
         JLabel pricingLabel = new JLabel("💰 Pricing & Capacity");
         pricingLabel.setFont(new Font("Arial", Font.BOLD, 16));
         pricingLabel.setForeground(DARK_BLUE);
-        pricingLabel.setBorder(new EmptyBorder(20, 0, 10, 0));
+        pricingLabel.setBorder(new EmptyBorder(0, 0, 15, 0));
         formPanel.add(pricingLabel, gbc);
 
         // Capacity
-        gbc.gridy = 11; gbc.gridwidth = 1;
+        gbc.gridy = 14; gbc.gridwidth = 1;
         JLabel capacityLabel = new JLabel("Passenger Capacity");
         capacityLabel.setFont(new Font("Arial", Font.BOLD, 14));
         capacityLabel.setForeground(DARK_BLUE);
@@ -870,7 +906,7 @@ public class AdminFlightDialog extends JDialog {
         formPanel.add(capacityField, gbc);
 
         // Price
-        gbc.gridx = 0; gbc.gridy = 12;
+        gbc.gridx = 0; gbc.gridy = 15;
         JLabel priceLabel = new JLabel("Ticket Price (USD)");
         priceLabel.setFont(new Font("Arial", Font.BOLD, 14));
         priceLabel.setForeground(DARK_BLUE);
@@ -886,7 +922,7 @@ public class AdminFlightDialog extends JDialog {
     private JPanel createButtonSection() {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
         buttonPanel.setBackground(BACKGROUND_GRAY);
-        buttonPanel.setBorder(new EmptyBorder(30, 0, 0, 0));
+        buttonPanel.setBorder(new EmptyBorder(40, 0, 20, 0));
 
         // Enhanced button sizing with professional dimensions
         saveButton.setPreferredSize(new Dimension(200, 48));
