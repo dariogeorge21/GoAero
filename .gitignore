@@ -26,6 +26,7 @@ bin/
 ### VS Code ###
 .vscode/
 test/
+docs/
 
 ### Mac OS ###
 .DS_Store
