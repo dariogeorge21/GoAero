@@ -30,7 +30,7 @@ public class UserRegistrationDialog extends JDialog {
     }
 
     private void initializeComponents() {
-        setSize(450, 500);
+        setSize(550, 600);
         setLocationRelativeTo(getParent());
         setResizable(false);
 
