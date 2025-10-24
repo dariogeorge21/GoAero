@@ -139,8 +139,7 @@ public class ValidationUtil {
         
         LocalDate now = LocalDate.now();
         LocalDate minDate = now.minusYears(12); // Minimum age 12
-        LocalDate maxDate = now.minusYears(120); // Maximum age 120
-        
+        LocalDate maxDate = now.minusYears(100); // Maximum age 120
         return dateOfBirth.isBefore(minDate) && dateOfBirth.isAfter(maxDate);
     }
 
