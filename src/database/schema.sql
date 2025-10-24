@@ -42,6 +42,18 @@ FOREIGN KEY (departure_airport_id) REFERENCES airports(airport_id),
 FOREIGN KEY (destination_airport_id) REFERENCES airports(airport_id)
 );
 
+CREATE TABLE users (
+user_id INT AUTO_INCREMENT PRIMARY KEY,
+first_name VARCHAR(255) NOT NULL,
+last_name VARCHAR(255) NOT NULL,
+email VARCHAR(255) NOT NULL UNIQUE,
+phone VARCHAR(20),
+DOB date,
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+password VARCHAR(255) NOT NULL
+);
+
 CREATE TABLE bookings (
 booking_id INT AUTO_INCREMENT PRIMARY KEY,
 user_id INT NOT NULL,  
@@ -61,18 +73,6 @@ FOREIGN KEY (flight_id) REFERENCES flight_data(flight_id),
 FOREIGN KEY (departure_airport_id) REFERENCES airports(airport_id),
 FOREIGN KEY (destination_airport_id) REFERENCES airports(airport_id),
 FOREIGN KEY (user_id) REFERENCES users(user_id)  
-);
-
-CREATE TABLE users (
-user_id INT AUTO_INCREMENT PRIMARY KEY,
-first_name VARCHAR(255) NOT NULL,
-last_name VARCHAR(255) NOT NULL,
-email VARCHAR(255) NOT NULL UNIQUE,
-phone VARCHAR(20),
-DOB date,
-created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-password VARCHAR(255) NOT NULL
 );
 
 CREATE INDEX idx_flight_id ON bookings(flight_id);
